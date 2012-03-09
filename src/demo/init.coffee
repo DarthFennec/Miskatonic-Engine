@@ -11,20 +11,21 @@ class init
       len    : [8]
       speed  : [0]
     pause = @fileloader.loadimg "img/pause.png"
-    textmgr = new texthandler @fileloader.loadimg("img/text.png"), 38, 3,
+    textmgr = new texthandler @fileloader.loadimg("img/text.png"), new vect(38, 3),
       new rect(16, 16, 656, 160), new rect(-16, 16, 32, 32), new rect(0, 0, 100, 100)
     @cutscenemgr = new cutscenehandler textmgr
     @scenemgr = new scenehandler textmgr
     @fademgr = new fader
     @gfx = new graphicshandler
+    screen = new surface $("#miskatonic").get(0)
     rends = [
       new loader loadsprite, @fileloader, new rect(250, 425, 300, 50)
-      new pauser pause, $("#miskatonic").get(0)
+      new pauser pause, screen
       @fademgr
       @cutscenemgr
       @scenemgr
     ]
-    @engine = new miskatonic $("#miskatonic").get(0), rends
+    @engine = new miskatonic screen, rends
     $(document).keydown 1, @engine.input
     $(document).keyup -1, @engine.input
     window.setInterval @engine.step, 33

@@ -1,15 +1,9 @@
 class miskatonic
-  constructor: (buffer, @rends) ->
-    @screen = buffer.getContext "2d"
-    @buffer = document.createElement "canvas"
-    @buffer.width = buffer.width
-    @buffer.height = buffer.height
-    @context = @buffer.getContext "2d"
-    @context.globalCompositeOperation = "destination-over"
-    @viewport = new camera @context, @buffer.width, @buffer.height
-    @keys = new Object
-    @keys.poll = [0, 0, 0, 0, 0, 0, 0]
-    @keys.state = [0, 0, 0, 0, 0, 0, 0]
+  constructor: (@screen, @rends) ->
+    @buffer = new surface @screen.size()
+    @buffer.ctx.fillStyle = "#000000"
+    @buffer.ctx.globalCompositeOperation = "destination-over"
+    @keys = {poll: [0, 0, 0, 0, 0, 0, 0], state: [0, 0, 0, 0, 0, 0, 0]}
     @keycodes = [87, 65, 83, 68, 16, 32, 27] # 87 = w, 65 = a, 83 = s, 68 = d, 16 = shift, 32 = space, 27 = esc
 
   input: (event) =>
@@ -20,7 +14,7 @@ class miskatonic
     for rend in @rends then if rend.input @keys then break
 
   step: =>
-    @screen.clearRect 0, 0, @buffer.width, @buffer.height
-    @screen.drawImage @buffer, 0, 0
-    @context.clearRect 0, 0, @buffer.width, @buffer.height
-    for rend in @rends then if rend.render @viewport then break
+    @screen.blit @buffer
+    @buffer.clear no
+    for rend in @rends then if rend.render @buffer then break
+    @buffer.clear yes

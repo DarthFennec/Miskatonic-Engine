@@ -57,4 +57,4 @@ iscene = (global) ->
       area:new rect 750, 0, 50, 600
       collide:true
   ]
-  global.scenemgr.initialize new scene(1000, 700, spritelist)
+  global.scenemgr.initialize new scene new vect(1000, 700), spritelist

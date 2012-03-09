@@ -13,15 +13,15 @@ class graphicshandler
     else slope = ydist / xdist
     if xdist < 0
       direction = 4 if slope > 2.41421356
-      direction = 3 if slope <= 2.41421356 and slope > 0.414213562
-      direction = 2 if slope <= 0.414213562 and slope > -0.414213562
-      direction = 1 if slope <= -0.414213562 and slope > -2.41421356
+      direction = 3 if 0.414213562 < slope <= 2.41421356
+      direction = 2 if -0.414213562 < slope <= 0.414213562
+      direction = 1 if -2.41421356 < slope <= -0.414213562
       direction = 0 if slope <= -2.41421356
     if xdist > 0
       direction = 0 if slope > 2.41421356
-      direction = -1 if slope <= 2.41421356 and slope > 0.414213562
-      direction = -2 if slope <= 0.414213562 and slope > -0.414213562
-      direction = -3 if slope <= -0.414213562 and slope > -2.41421356
+      direction = -1 if 0.414213562 < slope <= 2.41421356
+      direction = -2 if -0.414213562 < slope <= 0.414213562
+      direction = -3 if -2.41421356 < slope <= -0.414213562
       direction = 4 if slope <= -2.41421356
     object.vector = direction
     subject.vector = @opposite[direction + 3]

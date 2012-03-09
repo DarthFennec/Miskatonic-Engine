@@ -1,7 +1,6 @@
 class cutscenehandler
   constructor: (@text) ->
-    @buffer = document.createElement "canvas"
-    @bufferctx = @buffer.getContext "2d"
+    @buffer = new surface new vect 0, 0
     @currscene = 0
     @currclip = 0
     @currframe = 0
@@ -10,8 +9,7 @@ class cutscenehandler
     @currclip = 0
     @currframe = 0
     @currscene = newscene
-    @buffer.width = newscene.w
-    @buffer.height = newscene.h
+    @buffer.size newscene.size
     shorten = @currscene.clip[@currclip].text
     @text.initialize shorten if shorten isnt -1 and shorten isnt 0
     for clip in @currscene.clip then for particle in clip.particle
@@ -30,18 +28,15 @@ class cutscenehandler
           @text.next()
           @currscene = 0
           return
-      @bufferctx.clearRect 0, 0, @buffer.width, @buffer.height
+      @buffer.clear no
       for particle in @currscene.clip[@currclip].particle
-        currsrc = particle.image
-        info = particle.parametric @currframe
-        @bufferctx.globalAlpha = info[3]
-        @bufferctx.drawImage currsrc, info[0], info[1], info[2] * currsrc.width, info[2] * currsrc.height
-      @bufferctx.globalAlpha = 1.0
+        @buffer.draw particle.image, particle.parametric @currframe
+      @buffer.ctx.globalAlpha = 1.0
       @currframe += 1
       @text.render buffer
-      buffer.blit @buffer, "c", "c"
-      true
-    else false
+      buffer.layer @buffer, new vect "c", "c"
+      yes
+    else no
 
   input: (keys) ->
     if @currscene isnt 0
@@ -56,11 +51,11 @@ class cutscenehandler
         else
           @text.next()
           @currscene = 0
-      true
-    else false
+      yes
+    else no
 
 class cutscene
-  constructor: (@w, @h, @clip) ->
+  constructor: (@size, @clip) ->
 
 class clip
   constructor: (@duration, @text, @particle) ->

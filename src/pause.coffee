@@ -1,23 +1,20 @@
 class pauser
   constructor: (@overlay, @underlay) ->
-    @display = document.createElement "canvas"
-    @display.width = underlay.width
-    @display.height = underlay.height
-    @context = @display.getContext "2d"
-    @pressed = false
-    @show = false
+    @display = new surface new vect 800, 600
+    @pressed = no
+    @show = no
 
   render: (buffer) ->
     if @pressed
-      @pressed = false
+      @pressed = no
       @show = not @show
-      @context.clearRect 0, 0, @display.width, @display.height
-      @context.drawImage @underlay, 0, 0
+      @display.clear no
+      @display.blit @underlay
+      @display.blit @overlay
     if @show
-      buffer.blit @overlay, "c", "c"
-      buffer.blit @display, "c", "c"
+      buffer.blit @display
     @show
 
   input: (keys) ->
-    @pressed = true if keys.poll[6] is 1
+    @pressed = yes if keys.poll[6] is 1
     @show
