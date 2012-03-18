@@ -1,7 +1,9 @@
 class miskatonic
-  constructor: (@screen, @rends) ->
+  constructor: (@rends, @screen) ->
     @buffer = new surface @screen.size()
     @buffer.ctx.fillStyle = "#000000"
+    @buffer.ctx.strokeStyle = "#ffffff"
+    @buffer.ctx.lineWidth = 25
     @buffer.ctx.globalCompositeOperation = "destination-over"
     @keys = {poll: [0, 0, 0, 0, 0, 0, 0], state: [0, 0, 0, 0, 0, 0, 0]}
     @keycodes = [87, 65, 83, 68, 16, 32, 27] # 87 = w, 65 = a, 83 = s, 68 = d, 16 = shift, 32 = space, 27 = esc

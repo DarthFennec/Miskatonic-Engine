@@ -35,7 +35,7 @@ class texthandler
     if @choice.x isnt -1 and @choice.y isnt -1
       @choice.x = -1
       @choice.y = -1
-      @textbox[0] @currframe, choice
+      @textbox[0] @textbox, @currframe, choice
     if @textbox.length > @currframe + 1
       @currframe += 1
       if @textbox[@currframe][0] is ":"
@@ -62,7 +62,6 @@ class texthandler
     @drawtext finalstring
 
   drawtext: (texttodraw) ->
-    s = new vect 0, 0
     currline = 0
     currchar = 0
     @text.clear no
@@ -70,11 +69,11 @@ class texthandler
     @text.clear yes
     @text.ctx.globalAlpha = 1.0
     for chartodraw in texttodraw when currline < @chars.y
-      s.x = chartodraw.charCodeAt(0) - 16 * Math.floor chartodraw.charCodeAt(0) / 16
-      s.y = Math.floor chartodraw.charCodeAt(0) / 16
+      sx = chartodraw.charCodeAt(0) - 16 * Math.floor chartodraw.charCodeAt(0) / 16
+      sy = Math.floor chartodraw.charCodeAt(0) / 16
       dx = @localarea.x + currchar * (@chararea.x + @chararea.w)
       dy = @localarea.y + currline * (@chararea.y + @chararea.h)
-      @text.map @charsheet, s, new rect dx, dy, @chararea.w, @chararea.h
+      @text.map @charsheet, sx, sy, dx, dy, @chararea.w, @chararea.h
       currchar += 1
       if currchar >= @chars.x
         currchar = 0

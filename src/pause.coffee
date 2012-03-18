@@ -11,8 +11,7 @@ class pauser
       @display.clear no
       @display.blit @underlay
       @display.blit @overlay
-    if @show
-      buffer.blit @display
+    buffer.blit @display if @show
     @show
 
   input: (keys) ->

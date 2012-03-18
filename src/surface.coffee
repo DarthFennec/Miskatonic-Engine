@@ -21,7 +21,7 @@ class surface
 
   blit: (src) -> @ctx.drawImage src.buf, 0, 0
 
-  map: (src, coords, pos) -> @ctx.drawImage src.buf, coords.x * pos.w, coords.y * pos.h, pos.w, pos.h, Math.round(pos.x), Math.round(pos.y), pos.w, pos.h
+  map: (src, sx, sy, dx, dy, w, h) -> @ctx.drawImage src.buf, sx * w, sy * h, w, h, Math.round(dx), Math.round(dy), w, h
 
   draw: (src, info) ->
     @ctx.globalAlpha = info[3]
