@@ -4,6 +4,7 @@ class miskatonic
     @buffer.ctx.fillStyle = "#000000"
     @buffer.ctx.strokeStyle = "#ffffff"
     @buffer.ctx.lineWidth = 25
+    @buffer.ctx.lineCap = "round"
     @buffer.ctx.globalCompositeOperation = "destination-over"
     @keys = {poll: [0, 0, 0, 0, 0, 0, 0], state: [0, 0, 0, 0, 0, 0, 0]}
     @keycodes = [87, 65, 83, 68, 16, 32, 27] # 87 = w, 65 = a, 83 = s, 68 = d, 16 = shift, 32 = space, 27 = esc

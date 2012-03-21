@@ -5,8 +5,8 @@ class loader
   render: (buffer) ->
     if @loadctx.loadcount isnt 0
       @maxload = @loadctx.loadcount if @maxload < @loadctx.loadcount
-      loadwidth = (@maxload - @loadctx.loadcount) * buffer.dims.x / @maxload
-      buffer.ctx.moveTo 0, buffer.dims.y - 30
+      loadwidth = (@maxload - @loadctx.loadcount) * buffer.dims.x / @maxload - 30
+      buffer.ctx.moveTo 30, buffer.dims.y - 30
       buffer.ctx.lineTo loadwidth, buffer.dims.y - 30
       buffer.ctx.stroke()
       @loadsprite.step buffer, new vect 0, 0
