@@ -1,14 +1,11 @@
-icutscene = (global) ->
-  global.fileloader.loadandrun ["img/room.test0.png", "img/thumb.art1.png", "img/artifact.quest.png"], micutscene, global
-
-micutscene = (images, global) ->
-  global.cutscenemgr.initialize global.fileloader, [
+icutscene = (images, global) ->
+  global.cutscenemgr.initialize [
     new clip 150, [
       (text, frame, choice) ->
-        text[3] = "You chose one!" if choice is 0
-        text[3] = "You chose two!" if choice is 1
-      "This is some text during a cutscene."
-      ":Choice One:Choice Two"
+        text[3] = "#You chose one!" if choice is 0
+        text[3] = "#You chose two!" if choice is 1
+      "#This is some text during a cutscene."
+      ";#Make your choice:#;Choice One;Choice Two"
     ], [
       new particle images[2], (t) -> [Math.cos(Math.PI * t / 30) * 200 + 350, Math.sin(Math.PI * t / 30) * 200 + 250, 1, 1]
       new particle images[1], (t) -> [350, 250, 1, global.cutscenemgr.fadeform(t, 30)]

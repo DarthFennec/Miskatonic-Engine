@@ -14,10 +14,13 @@ class filehandler
       @loadcount -= 1
       @loadcount = 0 if @loadcount < 0
       if @callback isnt 0 and @loadcount is 0
-        @callback @retval, @arg
+        callback = @callback
+        retval = @retval
+        arg = @arg
         @callback = 0
         @arg = 0
         @retval = new Array
+        callback retval, arg
     newimg.buf.src = imgurl
     newimg
 

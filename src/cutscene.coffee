@@ -4,7 +4,7 @@ class cutscenehandler
     @currclip = 0
     @currframe = 0
 
-  initialize: (loader, newscene) ->
+  initialize: (newscene) ->
     @currclip = 0
     @currframe = 0
     @currscene = newscene

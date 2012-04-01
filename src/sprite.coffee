@@ -15,9 +15,9 @@ class sprite
     @[prop] = args[prop] ? def[prop] for prop of def
 
   step: (buff, offset) ->
-    xmove = [-0.707, -1, -0.707, 0, 0.707, 1, 0.707, 0]
-    ymove = [0.707, 0, -0.707, -1, -0.707, 0, 0.707, 1]
     if @sheet isnt 0
+      xmove = [-0.707, -1, -0.707, 0, 0.707, 1, 0.707, 0]
+      ymove = [0.707, 0, -0.707, -1, -0.707, 0, 0.707, 1]
       @frame = 0 if @frame >= @len[@mode]
       coords = new vect Math.floor(@frame) + Math.abs(@vector * @len[@mode]), @mode
       if @vector < 0

@@ -19,7 +19,7 @@ class surface
     if color then @ctx.fillRect 0, 0, @dims.x, @dims.y
     else @ctx.clearRect 0, 0, @dims.x, @dims.y
 
-  blit: (src) -> @ctx.drawImage src.buf, 0, 0
+  blit: (src, dx, dy) -> @ctx.drawImage src.buf, dx, dy
 
   map: (src, sx, sy, dx, dy, w, h) -> @ctx.drawImage src.buf, sx * w, sy * h, w, h, Math.round(dx), Math.round(dy), w, h
 
@@ -28,8 +28,6 @@ class surface
     @ctx.drawImage src.buf, Math.round(info[0]), Math.round(info[1]), Math.round(info[2] * src.dims.x), Math.round(info[2] * src.dims.y)
 
   layer: (src, pos) ->
-    pos.x = src.dims.x / 2 if pos.x is "c"
-    pos.y = src.dims.y / 2 if pos.y is "c"
     x = @dims.x / 2 - pos.x
     y = @dims.y / 2 - pos.y
     w = x + src.dims.x

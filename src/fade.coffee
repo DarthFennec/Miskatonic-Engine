@@ -13,10 +13,10 @@ class fader
       if newalpha < 0 then @step = 0 
       else
         buffer.ctx.globalAlpha = newalpha
-        buffer.ctx.fillStyle = @color if @color isnt "#000000"
+        buffer.ctx.fillStyle = @color
         buffer.clear yes
         buffer.ctx.globalAlpha = 1.0
-        buffer.ctx.fillStyle = "#000000" if @color isnt "#000000"
+        buffer.ctx.fillStyle = "#000000"
         @frame += 1
     no
 

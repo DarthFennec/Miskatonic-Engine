@@ -1,7 +1,4 @@
-iscene = (global) ->
-  global.fileloader.loadandrun ["img/pinkiepie.gif", "img/tent.png"], miscene, global
-
-miscene = (images, global) ->
+iscene = (images, global) ->
   global.scenemgr.initialize [
     new sprite 
       sheet  : images[0]
@@ -21,15 +18,13 @@ miscene = (images, global) ->
         subject.lookhere object, yes
         global.scenemgr.text.initialize [
           (text, frame, choice) ->
-            text[5] = "You chose yes!" if choice is 0
-            text[5] = "You chose no!" if choice is 1
-            text[5] = "You chose hmm?" if choice is 2
-            text[5] = "You made Pinkie cry :<" if choice is 3
-            text[5] = "You're silly ^^" if choice is 4
-          "Hi, I'm Pinkie Pie!"
-          "I threw this party just for you!"
-          "Were you surprised?"
-          ":Yes:Nope:What?:Buck you:what now"
+            text[4] = "Pinkie Pie#You chose yes!" if choice is 0
+            text[4] = "Pinkie Pie#You chose no!" if choice is 1
+            text[4] = "Pinkie Pie#You chose hmm?" if choice is 2
+            text[4] = "#You made Pinkie cry :<" if choice is 3
+          "Pinkie Pie#Hi, I'm Pinkie Pie!"
+          "Pinkie Pie#I threw this party just for you!"
+          ";Pinkie Pie#Were you surprised?#;Yes;Nope;What?;Buck you."
         ]
     new sprite
       sheet    : images[0]
@@ -41,7 +36,7 @@ miscene = (images, global) ->
       speed    : [0, 3, 6, 9]
       callback : ->
         global.fademgr.initialize "#CC0000", (frame) ->
-          icutscene global if frame is 30
+          global.load.loadctx.loadandrun ["img/room.test0.png", "img/thumb.art1.png", "img/artifact.quest.png"], icutscene, global if frame is 30
           if frame is 60 then -1
           else if frame <= 30 then frame / 30
           else if frame > 30 then (60 - frame) / 30

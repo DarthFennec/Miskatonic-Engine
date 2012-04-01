@@ -16,12 +16,13 @@ class scenehandler
     else no
 
   input: (keys) ->
-    keybindings = [[-3, 4, 3], [-2, -4, 2], [-1, 0, 1]]
-    vector = keybindings[1 + keys.state[0] - keys.state[2]][1 + keys.state[3] - keys.state[1]]
-    if not @text.input keys
+    if @currscene isnt 0 and not @text.input keys
+      keybindings = [[-3, 4, 3], [-2, -4, 2], [-1, 0, 1]]
+      vector = keybindings[1 + keys.state[0] - keys.state[2]][1 + keys.state[3] - keys.state[1]]
       if vector is -4 then @currscene[0].mode = 0 else
         @currscene[0].mode = if keys.state[4] is 1 then 3 else 1
         @currscene[0].vector = vector
       if keys.poll[5] is 1 then for scene in @currscene
         scene.dointeract @currscene[0] if scene.interact
-    if @currscene != 0 then yes else no
+      yes
+    else no

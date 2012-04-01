@@ -1,6 +1,6 @@
 class pauser
   constructor: (@overlay, @underlay) ->
-    @display = new surface new vect 800, 600
+    @display = new surface @overlay.size()
     @pressed = no
     @show = no
 
@@ -9,9 +9,9 @@ class pauser
       @pressed = no
       @show = not @show
       @display.clear no
-      @display.blit @underlay
-      @display.blit @overlay
-    buffer.blit @display if @show
+      @display.blit @underlay, 0, 0
+      @display.blit @overlay, 0, 0
+    buffer.blit @display, 0, 0 if @show
     @show
 
   input: (keys) ->
