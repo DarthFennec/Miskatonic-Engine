@@ -7,7 +7,9 @@ class scenehandler
 
   render: (buffer) ->
     if @currscene isnt 0
-      scene.docollide @currscene[0] for scene in @currscene
+      for sprite in @currscene when sprite.aienable
+        scene.docollide sprite for scene in @currscene when sprite isnt scene
+        sprite.aiscript @currscene if sprite.aiscript isnt 0
       fx = @currscene[0].area.x + (@currscene[0].area.w - buffer.dims.x) / 2
       fy = @currscene[0].area.y + (@currscene[0].area.h - buffer.dims.y) / 2
       @text.render buffer

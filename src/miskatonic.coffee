@@ -1,6 +1,7 @@
 class miskatonic
   constructor: (@rends, @screen) ->
     @buffer = new surface @screen.size()
+    @buffer.soundmgr = new soundhandler
     @buffer.ctx.fillStyle = "#000000"
     @buffer.ctx.strokeStyle = "#ffffff"
     @buffer.ctx.lineWidth = 25
@@ -18,6 +19,7 @@ class miskatonic
       @keys.state[i] = 1 if @keys.poll[i] is 1
       @keys.state[i] = 0 if @keys.poll[i] is -1
     for rend in @rends then if rend.input @keys then break
+    false
 
   step: =>
     @screen.blit @buffer, 0, 0

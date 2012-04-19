@@ -12,6 +12,7 @@ class fader
       newalpha = @step @frame
       if newalpha < 0 then @step = 0 
       else
+        buffer.soundmgr.all "fade", 1 - newalpha
         buffer.ctx.globalAlpha = newalpha
         buffer.ctx.fillStyle = @color
         buffer.clear yes

@@ -16,6 +16,7 @@ init = (images, global) ->
   global.cutscenemgr = new cutscenehandler global.textmgr
   global.fademgr = new fader
   global.pausemgr = new pauser images[2], global.engine.screen
+  global.getai = new aiscripts
   global.load.loadsprite = new sprite 
     sheet  : images[0]
     area   : new rect 350, 300, 100, 100
@@ -27,7 +28,7 @@ init = (images, global) ->
   global.engine.rends.push global.fademgr
   global.engine.rends.push global.cutscenemgr
   global.engine.rends.push global.scenemgr
-  global.load.loadctx.loadandrun ["img/pinkiepie.gif", "img/tent.png"], iscene, global
+  global.load.loadctx.loadandrun ["img/title.png", "snd/title.ogg"], titlescreen, global
 
 drawtextbackground = (surf) ->
   surf.ctx.fillStyle = "#000000"

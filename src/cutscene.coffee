@@ -23,6 +23,7 @@ class cutscenehandler
         else
           @text.next()
           @currscene = 0
+          @text.textbox = 0
           return
       @text.render buffer
       for particle in @currscene[@currclip].particle
@@ -45,6 +46,7 @@ class cutscenehandler
         else
           @text.next()
           @currscene = 0
+          @text.textbox = 0
       yes
     else no
 

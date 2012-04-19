@@ -4,11 +4,13 @@ class sprite
       sheet    : 0
       area     : new rect 0, 0, 0, 0
       callback : 0
+      aiscript : 0
       len      : new Array
       speed    : new Array
       collide  : false
       trigger  : false
       interact : false
+      aienable : true
       vector   : 0
       mode     : 0
       frame    : 0
@@ -54,7 +56,7 @@ class sprite
       if @trigger
         spr.mode = 0
         @callback this, spr
-  
+
   dointeract: (spr) ->
     offx = new rect spr.area.x, spr.area.y, spr.area.w, spr.area.h
     offx.x -= offx.w / 2 if spr.vector < 0

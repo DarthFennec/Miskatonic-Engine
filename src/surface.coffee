@@ -1,6 +1,6 @@
 class surface
   constructor: (arg) ->
-    if arg instanceof Image or arg instanceof HTMLCanvasElement
+    if arg instanceof HTMLImageElement or arg instanceof HTMLCanvasElement
       @buf = arg
       @dims = new vect arg.width, arg.height
     else

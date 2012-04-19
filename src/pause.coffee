@@ -8,6 +8,7 @@ class pauser
     if @pressed
       @pressed = no
       @show = not @show
+      buffer.soundmgr.all if @show then "pause" else "play"
       @display.clear no
       @display.blit @underlay, 0, 0
       @display.blit @overlay, 0, 0
