@@ -1,20 +1,22 @@
 class pauser
-  constructor: (@overlay, @underlay) ->
-    @display = new surface @overlay.size()
-    @pressed = no
-    @show = no
+  constructor: (@underlay, @menu, @obj) ->
+    @display = new surface @underlay.size()
+    @menu[0].elem = [new particle @display, (t) -> [0, 0, 1, 1]]
+    @pressed = 0
 
   render: (buffer) ->
-    if @pressed
-      @pressed = no
-      @show = not @show
-      buffer.soundmgr.all if @show then "pause" else "play"
+    if @pressed > 0 then @obj.frames = 0
+    if @pressed < 0
       @display.clear no
-      @display.blit @underlay, 0, 0
-      @display.blit @overlay, 0, 0
-    buffer.blit @display, 0, 0 if @show
-    @show
+      @display.drawImage @underlay
+      for clip in @menu then for i of clip when clip[i].time? then clip[i].time = 0
+      @obj.initialize @menu
+    @pressed = 0
+    @obj.render buffer
 
   input: (keys) ->
-    @pressed = yes if keys.poll[6] is 1
-    @show
+    a = if @obj.frames is 0 then -1 else 1
+    ret = @obj.input keys
+    b = if @obj.frames is 0 then -1 else 1
+    @pressed = if keys.pause.poll is 1 or (a is 1 and b is -1) then a else 0
+    ret

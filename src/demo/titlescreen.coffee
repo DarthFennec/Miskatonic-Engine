@@ -1,22 +1,32 @@
-titlescreen = (images, global) ->
-  global.engine.buffer.soundmgr.add images[1]
-  images[1].play 225000
-  global.cutscenemgr.initialize [
-    new clip 0, [
-      (text, frame, choice) ->
-        global.fademgr.initialize "#000000", (frame) ->
-          if frame is 30
-            global.cutscenemgr.text.textbox = 0
-            global.cutscenemgr.currscene = 0
-            global.engine.buffer.soundmgr.remove images[1]
-            global.load.loadctx.loadandrun ["img/pinkiepie.gif", "img/tent.png"], iscene, global
-          if frame is 60 then -1
-          else if frame <= 30 then frame / 30
-          else if frame > 30 then (60 - frame) / 30
-      ";#Welcome to the pointless title screen.;Play Demo;Play Demo;Play Demo;Play Demo"
-      "#Have fun!"
-    ], [
-      new particle images[0], (t) -> [0, 0, 1, 1]
-    ]
-    new clip 0, 0, [new particle images[0], (t) -> [0, 0, 1, 1]]
-  ]
+titlescreen = new scenenode ["img/title", "trk/title"],
+  -> serv.cutscenemgr.initialize [{
+    len: 50
+    overlay: new gradient "#000000", 50, false
+    snd: new music @file[1], 0, 225
+    elem: [new particle @file[0], (t) -> [0, 0, 1, 1]]
+  }, {
+    len: 0
+    txt: ";##;New Game;Load Game"
+    next: (k) => if k is 0 then 2 else if not serv.save.cansaveload then 5 else if serv.save.validate() then 4 else 3
+  }, {
+    len: 30
+    overlay: new gradient "#000000", 30, true
+    txt: -1
+    next: => @exitscene 6
+  }, {
+    txt: "##There is no save data avaliable."
+    next: 1
+  }, {
+    len: 30
+    overlay: new gradient "#000000", 30, true
+    txt: -1
+    next: -> serv.save.loadstate 6
+  }, {
+    txt: "##Your browser does not support this feature."
+    next: 1
+  }, {
+    overlay: new gradient "#000000", 30, false
+    elem: -1
+    snd: -1
+    next: -1
+  }]

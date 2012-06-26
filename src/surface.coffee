@@ -15,17 +15,22 @@ class surface
       @buf.height = newsize.y
     @dims
 
-  clear: (color) ->
-    if color then @ctx.fillRect 0, 0, @dims.x, @dims.y
+  clear: (opaque) ->
+    if opaque then @ctx.fillRect 0, 0, @dims.x, @dims.y
     else @ctx.clearRect 0, 0, @dims.x, @dims.y
 
-  blit: (src, dx, dy) -> @ctx.drawImage src.buf, dx, dy
+  drawImage: (src, d...) ->
+    d[i] = Math.round v for v, i in d
+    switch d.length
+      when 0 then @ctx.drawImage src.buf, 0, 0
+      when 2 then @ctx.drawImage src.buf, d[0], d[1]
+      when 4 then @ctx.drawImage src.buf, d[0], d[1], d[2], d[3]
+      when 6 then @ctx.drawImage src.buf, d[0], d[1], d[4], d[5], d[2], d[3], d[4], d[5]
+      when 8 then @ctx.drawImage src.buf, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]
 
-  map: (src, sx, sy, dx, dy, w, h) -> @ctx.drawImage src.buf, sx * w, sy * h, w, h, Math.round(dx), Math.round(dy), w, h
-
-  draw: (src, info) ->
-    @ctx.globalAlpha = info[3]
-    @ctx.drawImage src.buf, Math.round(info[0]), Math.round(info[1]), Math.round(info[2] * src.dims.x), Math.round(info[2] * src.dims.y)
+  map: (src, sx, sy, sw, sh, dx, dy, dw, dh) ->
+    if dh? then @drawImage src, sx*sw, sy*sh, dx*dw, dy*dh, sw, sh
+    else @drawImage src, sx*sw, sy*sh, dx*sw, dy*sh, sw, sh
 
   layer: (src, pos) ->
     x = @dims.x / 2 - pos.x
@@ -38,4 +43,4 @@ class surface
     dy = if y < 0 then 0 else y
     fw = (if w > @dims.x then @dims.x else w) - dx
     fh = (if h > @dims.y then @dims.y else h) - dy
-    @ctx.drawImage src.buf, Math.round(sx), Math.round(sy), Math.round(fw), Math.round(fh), Math.round(dx), Math.round(dy), Math.round(fw), Math.round(fh)
+    @drawImage src, sx, sy, dx, dy, fw, fh

@@ -1,55 +1,63 @@
-iscene = (images, global) ->
-  global.scenemgr.initialize [
+iscene = new scenenode ["img/pinkiepie", "img/tent"],
+  -> serv.outscenemgr.initialize [
     new sprite
-      sheet  : images[0]
+      sheet  : @file[0]
       area   : new rect 100, 100, 96, 96
-      vector : 2
+      vector : new angle "spr", 2
       len    : [1, 6, 6, 6]
       speed  : [0, 3, 6, 9]
     new sprite
-      sheet    : images[0]
+      sheet    : @file[0]
       area     : new rect 500, 100, 96, 96
       collide  : true
       interact : true
-      aienable : false
-      vector   : 4
+      passive  : true
+      vector   : new angle "spr", 4
       len      : [1, 6, 6, 6]
       speed    : [0, 3, 6, 9]
-      callback : (subject, object) ->
-        subject.lookhere object, yes
-        global.scenemgr.text.initialize [
-          (text, frame, choice) ->
-            text[4] = "Pinkie Pie#You chose yes!" if choice is 0
-            text[4] = "Pinkie Pie#You chose no!" if choice is 1
-            text[4] = "Pinkie Pie#You chose hmm?" if choice is 2
-            text[4] = "#You made Pinkie cry :<" if choice is 3
-          "Pinkie Pie#Hi, I'm Pinkie Pie!"
-          "Pinkie Pie#I threw this party just for you!"
-          ";Pinkie Pie#Were you surprised?#;Yes;Nope;What?;Buck you."
-        ]
+      callback : (subject, object) =>
+        subject.vector.set "pts", subject.area.p, object.area.p
+        @child[0].initialize()
     new sprite
-      sheet    : images[0]
+      sheet    : @file[0]
       area     : new rect 100, 500, 96, 96
       collide  : true
       interact : true
-      aiscript : global.getai.follow 100, 150, 200
-      vector   : -1
+      aiscript : serv.getai.follow 100, 150, 200
+      vector   : (new angle "spr", -1)
       len      : [1, 6, 6, 6]
       speed    : [0, 3, 6, 9]
-      callback : ->
-        global.fademgr.initialize "#CC0000", (frame) ->
-          global.load.loadctx.loadandrun ["img/room.test0.png", "img/thumb.art1.png", "img/artifact.quest.png"], icutscene, global if frame is 30
-          if frame is 60 then -1
-          else if frame <= 30 then frame / 30
-          else if frame > 30 then (60 - frame) / 30
-    new tileset new vect(100, 100), images[1], [
+      callback : => @child[1].initialize()
+    new tileset (new vect 100, 100), @file[1], [
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
-      [21, 21, 21, 21, 01, -02, -03, -04, 05, 21]
-      [21, 21, 21, 21, 06, -07, -08, -09, 10, 21]
+      [21, 21, 21, 21, 1, -2, -3, -4, 5, 21]
+      [21, 21, 21, 21, 6, -7, -8, -9, 10, 21]
       [21, 21, 21, 21, 11, -12, 13, -14, 15, 21]
       [21, 21, 21, 21, 16, 17, 18, 19, 20, 21]
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
     ]
   ]
+
+iconvo = new scenenode [],
+  -> serv.cutscenemgr.initialize [{
+    txt: "Pinkie Pie#Hi, I'm Pinkie Pie!"
+  }, {
+    txt: "Pinkie Pie#I threw this party just for you!"
+  }, {
+    txt: ";Pinkie Pie#Were you surprised?#;Yes;Nope;What?;Buck you."
+    next: (k) -> 3 + k
+  }, {
+    txt: "Pinkie Pie#You chose yes!"
+    next: => @exitscene -1
+  }, {
+    txt: "Pinkie Pie#You chose no!"
+    next: => @exitscene -1
+  }, {
+    txt: "Pinkie Pie#You chose hmm?"
+    next: => @exitscene -1
+  }, {
+    txt: "#You made Pinkie cry :<"
+    next: => @exitscene -1
+  }]
