@@ -1,14 +1,16 @@
 class pauser
-  constructor: (@underlay, @menu, @obj) ->
-    @display = new surface @underlay.size()
-    @menu[0].elem = [new particle @display, (t) -> [0, 0, 1, 1]]
-    @pressed = 0
+  constructor: (@underlay, @display, @menu, @obj, @pausesnd, @unpausesnd) -> @pressed = 0
 
   render: (buffer) ->
-    if @pressed > 0 then @obj.frames = 0
+    @pausesnd.step()
+    @unpausesnd.step()
+    if @pressed > 0
+      @unpausesnd.play() if @pressed is 2
+      @obj.frames = 0
     if @pressed < 0
-      @display.clear no
+      @display.size @underlay.size()
       @display.drawImage @underlay
+      @pausesnd.play()
       for clip in @menu then for i of clip when clip[i].time? then clip[i].time = 0
       @obj.initialize @menu
     @pressed = 0
@@ -19,4 +21,6 @@ class pauser
     ret = @obj.input keys
     b = if @obj.frames is 0 then -1 else 1
     @pressed = if keys.pause.poll is 1 or (a is 1 and b is -1) then a else 0
+    @pressed = 2 if keys.pause.poll is 1 and a is 1
+    @pressed = 0 if keys.pause.poll is 1 and @obj.frame? and @obj.frame.overlay isnt -1
     ret

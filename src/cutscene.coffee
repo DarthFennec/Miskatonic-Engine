@@ -1,5 +1,5 @@
 class cutscenehandler
-  constructor: (@charsheet, @background, @chars, @chararea) ->
+  constructor: (@charsheet, @background, @chars, @chararea, @charpos, @nexttxtsnd, @lasttxtsnd) ->
     @text = new surface @background.size()
     @frames = 0
     @choice = -1
@@ -11,14 +11,16 @@ class cutscenehandler
     @next()
 
   render: (buffer) ->
+    @nexttxtsnd.step()
+    @lasttxtsnd.step()
     if @frames isnt 0
       if @time > @frame.len > 0 then @next()
       if @frame.snd isnt -1 then @frame.snd.step()
-      if @frame.txt isnt -1 then buffer.drawImage @text, (buffer.dims.x - @text.dims.x)/2, buffer.dims.y - @text.dims.y - (buffer.dims.x - @text.dims.x)/2
+      if @frame.txt isnt -1 then buffer.drawImage @text, @charpos.x + (buffer.dims.x - @text.dims.x)/2, @charpos.y + (buffer.dims.y - @text.dims.y)/2
       if @frame.overlay isnt -1 then if @frame.overlay.render buffer then @frame.overlay = -1
       if @frame.elem isnt -1 then for p in @frame.elem then p.render buffer
       if @frame.elem isnt -1 or @frame.overlay isnt -1 then buffer.ctx.globalAlpha = 1.0
-      @time += 1
+      @time += 1 if @frame.len > 0
       @frame.elem isnt -1
     else no
 
@@ -37,6 +39,10 @@ class cutscenehandler
     nxt = nxt @choice if "function" is typeof nxt
     @choice = -1
     if nxt isnt -1
+      if @frame.txt isnt @frames[nxt].txt
+        if @frames[nxt].txt is -1 then @lasttxtsnd.play()
+        else if @frame.txt isnt -1 then @nexttxtsnd.play()
+      @frames[nxt].snd?.play?() if @frame.snd isnt @frames[nxt].snd
       @frame[n] = @frames[nxt][n] for n of @frames[nxt]
       @frame.next += 1 if @frame.next is nxt
       @time = 0
@@ -45,7 +51,9 @@ class cutscenehandler
           @choice = 0
           @drawchoice @frame.txt
         else @drawtext @frame.txt
-    else @frames = 0
+    else
+      @lasttxtsnd.play() if @frame.txt isnt -1
+      @frames = 0
 
   drawchoice: (texttodraw) ->
     choices = (texttodraw.substring 1).split ";", 5
@@ -86,7 +94,7 @@ class gradient
     buffer.ctx.fillStyle = @color
     buffer.clear yes
     buffer.ctx.globalAlpha = 1.0
-    buffer.ctx.fillStyle = "#000000"
+    buffer.ctx.fillStyle = serv.engine.bgcolor
     @time += 1
     @time > @duration
 
@@ -97,22 +105,9 @@ class particle
   render: (buffer) ->
     info = @callback @time
     buffer.ctx.globalAlpha = info[3]
-    buffer.drawImage @image, info[0], info[1], info[2]*@image.dims.x, info[2]*@image.dims.y
-    @time += 1
+    dx = info[0] + (buffer.dims.x - @image.dims.x*info[2])/2
+    dy = info[1] + (buffer.dims.y - @image.dims.y*info[2])/2
+    buffer.drawImage @image, dx, dy, info[2]*@image.dims.x, info[2]*@image.dims.y
+    @time = info[4]
 
   fadeform: (t, cycle) -> 0.5 + 0.5*Math.cos t*Math.PI/cycle
-
-  zoomform: (xzoom, yzoom, x, y, z, a) -> [x - xzoom*z, y - yzoom*z, z, a]
-
-class sound
-  constructor: (@track) ->
-
-  step: -> @track?.newset = yes
-
-class music
-  constructor: (@track, initvol, @loop) ->
-    @track?.fade initvol
-    @track?.play()
-    @track?.ii = window.setInterval (=> @track.play()), 1000*@loop
-
-  step: -> @track?.newset = yes

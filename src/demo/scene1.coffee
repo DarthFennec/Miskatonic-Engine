@@ -1,4 +1,4 @@
-iscene = new scenenode ["img/pinkiepie", "img/tent"],
+iscene = new scenenode ["img/pinkiepie", "img/tent", "snd/scene1"],
   -> serv.outscenemgr.initialize [
     new sprite
       sheet  : @file[0]
@@ -28,7 +28,7 @@ iscene = new scenenode ["img/pinkiepie", "img/tent"],
       len      : [1, 6, 6, 6]
       speed    : [0, 3, 6, 9]
       callback : => @child[1].initialize()
-    new tileset (new vect 100, 100), @file[1], [
+    new tileset (new vect 100, 100), @file[1], (@file[2].init 0, 15), "#DDDDDD", [
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
       [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]

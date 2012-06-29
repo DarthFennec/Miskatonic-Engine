@@ -1,8 +1,11 @@
 class tileset extends sprite
-  constructor: (@tilesize, @tilesheet, grid) ->
+  constructor: (@tilesize, @tilesheet, @bgmusic, bgcolor, grid) ->
+    @musicplaying = no
+    serv.engine.bgcolor = bgcolor
+    serv.engine.buffer.ctx.fillStyle = bgcolor
     @gridsize = new vect grid[0].length, grid.length
     @grid = for i in [0...@gridsize.x] then for j in [0...@gridsize.y] then grid[j][i]
-    newsheet = new surface (new vect).l => @tilesize.i()*@gridsize.i()
+    newsheet = new surface (new vect).l (k) => @tilesize.i(k)*@gridsize.i(k)
     width = @tilesheet.dims.x/@tilesize.x
     for i in [0...@gridsize.x] then for j in [0...@gridsize.y]
       srcy = Math.floor ((Math.abs @grid[i][j]) - 1)/width
@@ -10,11 +13,17 @@ class tileset extends sprite
       newsheet.map @tilesheet, srcx, srcy, @tilesize.x, @tilesize.y, i, j
     super {sheet: newsheet, collide: true, passive: true, area: new rect 0, 0, @tilesize.x, @tilesize.y}
 
-  step: (buff, offset) -> buff.layer @sheet, (new vect).l -> offset.i() + buff.dims.i()/2
+  step: (buff, offset) ->
+    if not @musicplaying
+      @musicplaying = yes
+      serv.audio.maxvolume = yes
+      @bgmusic.play()
+    @bgmusic.step()
+    buff.layer @sheet, (new vect).l (k) -> offset.i(k) + buff.dims.i(k)/2
 
   docollide: (spr) ->
-    block = (new vect).l => Math.floor spr.area.p.i()/@tilesize.i()
-    mid = (new vect).l => (Math.floor (spr.area.p.i() + spr.area.s.i()/2)/@tilesize.i()) - block.i()
+    block = (new vect).l (k) => Math.floor spr.area.p.i(k)/@tilesize.i(k)
+    mid = (new vect).l (k) => (Math.floor (spr.area.p.i(k) + spr.area.s.i(k)/2)/@tilesize.i(k)) - block.i(k)
     central = 1 + mid.x + mid.y*2
     if block.x < 0
       @area.p.x = -@area.s.x

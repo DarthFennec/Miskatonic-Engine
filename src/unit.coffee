@@ -1,18 +1,14 @@
 class vect
-  constructor: (@x, @y) -> @static = vect.static
+  constructor: (@x, @y) ->
 
   l: (func) ->
-    @static.isx = yes
-    @x = func()
-    @static.isx = no
-    @y = func()
+    @x = func yes
+    @y = func no
     this
 
-  i: -> if @static.isx then @x else @y
+  i: (k) -> if k then @x else @y
 
-  j: -> if @static.isx then @y else @x
-
-vect.static = {isx: yes}
+  j: (k) -> if k then @y else @x
 
 class rect
   constructor: (x, y, w, h) ->

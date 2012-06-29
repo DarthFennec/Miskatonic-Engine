@@ -2,8 +2,9 @@ class engine
   constructor: (@rends, scenetree, @screen, keymap) ->
     @keys = {}
     for key of keymap then @keys[key] = {val: keymap[key], poll: 0, state: 0}
+    @bgcolor = "#000000"
     @buffer = new surface @screen.size()
-    @buffer.ctx.fillStyle = "#000000"
+    @buffer.ctx.fillStyle = @bgcolor
     @buffer.ctx.strokeStyle = "#ffffff"
     @buffer.ctx.lineWidth = 25
     @buffer.ctx.lineCap = "round"
@@ -11,6 +12,20 @@ class engine
     scenetree.n.buildtree scenetree.c, 0, 0
     scenetree.n.initialize()
     serv.reset yes
+
+  resize: (newx, newy) ->
+    s = new vect newx, newy
+    t = @screen.size()
+    if s.x isnt t.x or s.y isnt t.y
+      @buffer.size s
+      @screen.size s
+      @buffer.ctx.fillStyle = @bgcolor
+      @buffer.ctx.strokeStyle = "#ffffff"
+      @buffer.ctx.lineWidth = 25
+      @buffer.ctx.lineCap = "round"
+      @buffer.ctx.globalCompositeOperation = "destination-over"
+
+  fullscreen: (k) -> @screen.buf.className = if k then "fullscreen" else ""
 
   input: (code, data) ->
     importantkey = no
@@ -29,3 +44,4 @@ class engine
     @buffer.clear no
     for rend in @rends when rend.render @buffer then break
     @buffer.clear yes
+    no

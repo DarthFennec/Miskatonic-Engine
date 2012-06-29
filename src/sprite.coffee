@@ -25,7 +25,7 @@ class sprite
         buff.map @sheet, coords.x, coords.y, @area.s.x, @area.s.y, offset.x - @area.p.x - @area.s.x, @area.p.y - offset.y, 1, 1
         buff.ctx.scale -1, 1
       else buff.map @sheet, coords.x, coords.y, @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
-      @area.p.l => @area.p.i() + @speed[@mode]*(@vector.get "vlc").i()
+      @area.p.l (k) => @area.p.i(k) + @speed[@mode]*(@vector.get "vlc").i(k)
       @frame += 0.3
 
   docollide: (spr) ->
@@ -56,9 +56,9 @@ class sprite
 
   dointeract: (spr) ->
     offx = new rect spr.area.p.x, spr.area.p.y, spr.area.s.x, spr.area.s.y
-    offx.p.l -> offx.p.i() + (spr.vector.get "kbd").i()*offx.s.i()/2
-    off1 = (new vect).l => offx.p.i() + offx.s.i() - @area.p.i()
-    off2 = (new vect).l => @area.p.i() + @area.s.i() - offx.p.i()
+    offx.p.l (k) -> offx.p.i(k) + (spr.vector.get "kbd").i(k)*offx.s.i(k)/2
+    off1 = (new vect).l (k) => offx.p.i(k) + offx.s.i(k) - @area.p.i(k)
+    off2 = (new vect).l (k) => @area.p.i(k) + @area.s.i(k) - offx.p.i(k)
     if off1.x > 0 and off1.y > 0 and off2.x > 0 and off2.y > 0
       spr.mode = 0
       @callback this, spr
