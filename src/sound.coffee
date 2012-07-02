@@ -1,25 +1,20 @@
 class soundhandler
-  constructor: (@musicext, @soundext) ->
+  constructor: (@soundext) ->
     @volume = 1
     @volnew = -1
     @maxvolume = no
     @muted = 0
     @list = []
     serv.formats.filetype.push
-      head: "trk/"
-      call: (url) ->
-        newf = serv.audio.add url + serv.audio.musicext
-        if serv.audio.musicext isnt 0
-          serv.load.loadcount.push newf
-          newf.data.addEventListener "canplaythrough", => serv.formats.finish newf
-        newf
-    serv.formats.filetype.push
       head: "snd/"
       call: (url) ->
         newf = serv.audio.add url + serv.audio.soundext
         if serv.audio.soundext isnt 0
           serv.load.loadcount.push newf
-          newf.data.addEventListener "canplaythrough", => serv.formats.finish newf
+          newf.data.addEventListener "error", ->
+            newf.data = -1
+            serv.formats.err newf, url + serv.audio.soundext
+          newf.data.addEventListener "canplaythrough", -> serv.formats.finish newf
         newf
 
   add: (sndurl) ->

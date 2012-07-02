@@ -1,4 +1,4 @@
-titlescreen = new scenenode ["img/title", "trk/title"],
+titlescreen = new scenenode ["img/title", "snd/title"],
   -> serv.cutscenemgr.initialize [{
     len: 50
     overlay: new gradient "#000000", 50, false

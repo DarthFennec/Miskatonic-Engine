@@ -16,7 +16,7 @@ window.addEventListener "load", ->
     serv.load = new loader
     serv.formats = new format
     serv.save = new savehandler sysinf.cansaveload
-    serv.audio = new soundhandler sysinf.musicext, sysinf.soundext
+    serv.audio = new soundhandler sysinf.soundext
     serv.reset = (runfirstscene) ->
       serv.audio.erase()
       serv.state = serv.scene
