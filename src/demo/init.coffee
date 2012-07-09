@@ -22,8 +22,8 @@ window.addEventListener "load", ->
       serv.state = serv.scene
       serv.scene.child[0].initialize() if runfirstscene
     serv.engine = new engine [serv.audio, serv.load], scenetree, screen, keymap
-    document.addEventListener "keydown", (e) -> serv.engine.input e.keyCode, 1
-    document.addEventListener "keyup", (e) -> serv.engine.input e.keyCode, -1
+    document.addEventListener "keydown", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, 1
+    document.addEventListener "keyup", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, -1
     window.setInterval (-> serv.engine.step()), 33
 
 init = new scenenode ["img/text", "img/pause", "snd/next", "snd/last", "snd/omenu", "snd/cmenu", "img/controls[0-4]"],

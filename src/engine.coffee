@@ -27,7 +27,7 @@ class engine
 
   fullscreen: (k) -> @screen.buf.className = if k then "fullscreen" else ""
 
-  input: (code, data) ->
+  input: (block, code, data) ->
     importantkey = no
     for k of @keys
       @keys[k].poll = 0
@@ -36,7 +36,9 @@ class engine
         @keys[k].poll = data
       @keys[k].state = 1 if @keys[k].poll is 1
       @keys[k].state = 0 if @keys[k].poll is -1
-    if importantkey then for rend in @rends when rend.input @keys then break
+    if importantkey
+      for rend in @rends when rend.input @keys then break
+      block()
     no
 
   step: ->

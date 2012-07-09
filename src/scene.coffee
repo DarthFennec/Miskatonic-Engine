@@ -18,7 +18,7 @@ class scenehandler
   input: (keys) ->
     if @currscene isnt 0
       if keys.right.state is keys.left.state and keys.down.state is keys.up.state then @currscene[0].mode = 0 else
-        @currscene[0].mode = if keys.run.state is 1 then 3 else 1
+        @currscene[0].mode = if keys.run.state is 1 then 2 else 1
         @currscene[0].vector.set "kbd", new vect keys.right.state - keys.left.state, keys.down.state - keys.up.state
       if keys.act.poll is 1 then for scene in @currscene when scene.interact then scene.dointeract @currscene[0]
       yes

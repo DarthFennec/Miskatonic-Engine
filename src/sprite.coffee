@@ -15,16 +15,18 @@ class sprite
       mode     : 0
       frame    : 0
     @[prop] = args[prop] ? def[prop] for prop of def
+    if @sheet isnt 0
+      tmp = @sheet
+      @sheet = new surface new vect 8*@area.s.x, tmp.dims.y
+      @sheet.ctx.scale -1, 1
+      @sheet.drawImage tmp, @area.s.x, 0, -3*@area.s.x, 0, 3*@area.s.x, tmp.dims.y
+      @sheet.ctx.scale -1, 1
+      @sheet.drawImage tmp, 0, 0, 3*@area.s.x, 0, 5*@area.s.x, tmp.dims.y
 
   step: (buff, offset) ->
     if @sheet isnt 0
-      @frame = 0 if @frame >= @len[@mode]
-      coords = new vect (Math.floor @frame) + (Math.abs @len[@mode]*(@vector.get "spr")), @mode
-      if (@vector.get "spr") < 0
-        buff.ctx.scale -1, 1
-        buff.map @sheet, coords.x, coords.y, @area.s.x, @area.s.y, offset.x - @area.p.x - @area.s.x, @area.p.y - offset.y, 1, 1
-        buff.ctx.scale -1, 1
-      else buff.map @sheet, coords.x, coords.y, @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
+      @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
+      buff.map @sheet, (3 + @vector.get "spr"), (Math.floor @frame), @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
       @area.p.l (k) => @area.p.i(k) + @speed[@mode]*(@vector.get "vlc").i(k)
       @frame += 0.3
 
