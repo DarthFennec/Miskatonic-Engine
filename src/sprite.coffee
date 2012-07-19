@@ -1,3 +1,22 @@
+# **The general sprite implementation.**
+#
+# - sheet: The spritesheet.
+# - area: The position and size of the sprite.
+# - callback: Called in trigger and interact events.
+# - aiscript: Called every frame.
+# - len: Animation length for each mode.
+# - speed: Movement speed for each mode.
+# - collide: _true_ if the sprite is solid.
+# - trigger: _true_ if there's a trigger event.
+# - interact: _true_ if there's an interact event.
+# - passive: _true_ if the sprite doesn't move/collide.
+# - vector: The direction the sprite is pointing.
+# - mode: The mode (standing, walking, running, etc).
+# - frame: The animation frame index.
+#
+# Sprites can represent anything from maps to player characters to NPCs
+# to invisible trigger fields to interactive stationary objects, etc etc.
+# Everything in the scene can be represented by a sprite.
 class sprite
   constructor: (args) ->
     def =
@@ -23,6 +42,9 @@ class sprite
       @sheet.ctx.scale -1, 1
       @sheet.drawImage tmp, 0, 0, 3*@area.s.x, 0, 5*@area.s.x, tmp.dims.y
 
+  # Select the correct tile from the spritesheet, based on _vector_, _mode_,
+  # and _frame_, and draw it to the screen based on _area_. Then update _area_
+  # and _frame_.
   step: (buff, offset) ->
     if @sheet isnt 0
       @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
@@ -30,6 +52,11 @@ class sprite
       @area.p.l (k) => @area.p.i(k) + @speed[@mode]*(@vector.get "vlc").i(k)
       @frame += 0.3
 
+  # Detect collisions by calculating the distance from each edge of one
+  # sprite to the alternate edge of the other. If every distance is positive,
+  # there is an overlap, so determine the direction of least overlap and
+  # push the sprite out in that direction (if the sprite is solid), and/or
+  # trigger an event (if the corresponding flag is set).
   docollide: (spr) ->
     off1 = spr.area.p.x + spr.area.s.x - @area.p.x
     off2 = spr.area.p.y + spr.area.s.y - @area.p.y
@@ -56,6 +83,9 @@ class sprite
         spr.mode = 0
         @callback this, spr
 
+  # When the action key is pressed, and a sprite is within the main sprite's
+  # field of view (in this case, less than half a sprite away in the direction
+  # the main sprite is facing), a sprite might "interact" via its _callback_.
   dointeract: (spr) ->
     offx = new rect spr.area.p.x, spr.area.p.y, spr.area.s.x, spr.area.s.y
     offx.p.l (k) -> offx.p.i(k) + (spr.vector.get "kbd").i(k)*offx.s.i(k)/2
@@ -65,8 +95,10 @@ class sprite
       spr.mode = 0
       @callback this, spr
 
+  # Gather and return data to be saved.
   savestate: -> {px: @area.p.x, py: @area.p.y, md: @mode, fr: @frame, vx: @vector.get "spr"}
 
+  # Distribute save data to be used.
   loadstate: (state) ->
     @area.p.x = state.px
     @area.p.y = state.py

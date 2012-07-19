@@ -1,3 +1,11 @@
+# **The tilemap sprite.**
+#
+# A [sprite](sprite.html) that represents the map, or scenery image: floors, walls, things that
+# don't move, etc. A map is made of rectangular tiles from a _tilesheet_, which are
+# indexed starting from 1, increasing from left to right and then from top to bottom.
+# The _grid_ is a 2D array of integers, each element representing the index on the _tilesheet_
+# of the tile in that spot. These numbers are negative if they are sold walls, and
+# positive otherwise. The tile map should be at the bottom of the sprite stack.
 class tileset extends sprite
   constructor: (@tilesize, @tilesheet, @bgmusic, bgcolor, grid) ->
     @musicplaying = @bgmusic is 0
@@ -15,6 +23,7 @@ class tileset extends sprite
       srcx = (Math.abs @grid[1 + i][1 + j]) - 1 - srcy*width
       @sheet.map @tilesheet, srcx, srcy, @tilesize.x, @tilesize.y, i, j
 
+  # Play the background music if it's not already playing, and blit the map to the screen.
   step: (buff, offset) ->
     if not @musicplaying
       @musicplaying = yes
@@ -23,6 +32,8 @@ class tileset extends sprite
     @bgmusic.step() if @bgmusic isnt 0
     buff.layer @sheet, (new vect).l (k) => offset.i(k) + buff.dims.i(k)/2
 
+  # Check squares that are near the sprite. If any of them are negative,
+  # and close enough to collide with, then run collision detection.
   docollide: (spr) ->
     block = (new vect).l (k) => 1 + Math.floor spr.area.p.i(k)/@tilesize.i(k)
     mid = (new vect).l (k) => 1 + (Math.floor (spr.area.p.i(k) + spr.area.s.i(k)/2)/@tilesize.i(k)) - block.i(k)

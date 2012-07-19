@@ -1,3 +1,10 @@
+# **Helper class for loading resources.**
+#
+# TODO: Combine this class with the loading screen class.  
+# Keep track of a list of callback functions to run after any given collection
+# of resources has finished loading. Keep track of a list of filetypes, so
+# the engine can always figure out how to load any particular file. Also,
+# provide helper functions to make resource loading easier.
 class format
   constructor: ->
     @callbacks = []
@@ -15,6 +22,8 @@ class format
         newf.buf.src = url + ".png"
         newf
 
+  # Find the correct filetype and load the file from the server.
+  # Optionally, specify a range of files to load.
   load: (file) ->
     type = file.substr 0, 4
     obrack = file.indexOf "["
@@ -29,10 +38,13 @@ class format
     else for l in @filetype when l.head is type then ret = l.call file
     ret
 
+  # Call when there is an error in loading a file.
   err: (newf, fname) ->
     window.alert "Error: failed to load " + fname.substring 1 + fname.lastIndexOf "/"
     @finish newf
 
+  # Call when a file is finished loading. Removes itself from the list,
+  # checks if it's the last one, and if it is, run all the callbacks.
   finish: (newf) ->
     t = serv.load.loadcount.indexOf newf
     serv.load.loadcount.splice t, 1 if t isnt -1

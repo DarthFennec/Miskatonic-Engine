@@ -60,10 +60,10 @@ pausescreen = (bkgd, img) -> [{
   txt: ";;4:3;16:10;5:3;16:9"
   next: (k) ->
     switch k
-      when 0 then serv.engine.resize 800, 600
-      when 1 then serv.engine.resize 960, 600
-      when 2 then serv.engine.resize 1000, 600
-      when 3 then serv.engine.resize 1066, 600
+      when 0 then serv.engine.resize new vect 800, 600
+      when 1 then serv.engine.resize new vect 960, 600
+      when 2 then serv.engine.resize new vect 1000, 600
+      when 3 then serv.engine.resize new vect 1066, 600
     -1
 }, {
   txt: "This has not been implemented yet."

@@ -1,17 +1,27 @@
+# **Some common aiscript implementations.**
+#
+# Sprites can optionally have an _aiscript_ member function. This class
+# contains factory methods to generate some of the more common ones.
 class aiscripts
-  constructor: ->
 
+  # Turn to face the main sprite, if it is within a given radius.
   watch: (radius) ->
     (scenegraph) ->
       distance = (Math.pow @area.p.x - scenegraph[0].area.p.x, 2) + (Math.pow @area.p.y - scenegraph[0].area.p.y, 2)
       @vector.set "pts", @area.p, scenegraph[0].area.p if distance < radius*radius
 
+  # Move and change direction randomly, given some stability of motion.
   random: (stability) ->
     (scenegraph) ->
       if Math.random() > stability
         @mode = Math.floor Math.random()*3
         @vector.set "spr", -3 + Math.floor Math.random()*8
 
+  # Follow the main sprite:
+  #
+  # - Run or walk after the main sprite, avoiding obstactles.
+  # - Watch the main sprite without moving, if it is within a given radius.
+  # - If the main sprite is too close, move out of the way.
   follow: (bumprad, inrad, outrad) ->
     graph = 0
     path = 0
@@ -33,21 +43,17 @@ class aiscripts
         vctr = scenegraph[0].vector.get "kbd"
         if dist.x < dist.y
           if vctr.y isnt 0
-            if vctr.x is -1 then @vector.set "spr", 2
-            else if vctr.x is 1 then @vector.set "spr", -2
-            else
-              dirp += 1 until destpos.x + dirp is graph.input.length or graph.input[destpos.x + dirp][destpos.y] is 1
-              dirn += 1 until destpos.x - dirn is 0 or graph.input[destpos.x - dirn][destpos.y] is 1
-              @vector.set "spr", if dirp > dirn then 2 else -2
+            if vctr.x isnt 0 then @vector.set "kbd", new vect -vctr.x, 0 else
+              dirp += 1 until graph.input[destpos.x + dirp][destpos.y] is 1
+              dirn += 1 until graph.input[destpos.x - dirn][destpos.y] is 1
+              @vector.set "kbd", new vect (if dirp > dirn then 1 else -1), 0
             @mode = 2
         else
           if vctr.x isnt 0
-            if vctr.y is -1 then @vector.set "spr", 4
-            else if vctr.y is 1 then @vector.set "spr", 0
-            else
-              dirp += 1 until destpos.y + dirp is graph.input[0].length or graph.input[destpos.x][destpos.y + dirp] is 1
-              dirn += 1 until destpos.y - dirn is 0 or graph.input[destpos.x][destpos.y - dirn] is 1
-              @vector.set "spr", if dirp > dirn then 4 else 0
+            if vctr.y isnt 0 then @vector.set "kbd", new vect 0, -vctr.y else
+              dirp += 1 until graph.input[destpos.x][destpos.y + dirp] is 1
+              dirn += 1 until graph.input[destpos.x][destpos.y - dirn] is 1
+              @vector.set "kbd", new vect 0, if dirp > dirn then 1 else -1
             @mode = 2
       if bumprad < distance <= inrad
         @vector.set "pts", @area.p, scenegraph[0].area.p

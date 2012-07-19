@@ -1,15 +1,38 @@
+# **The cutscene/dialogue/etc system.**
+#
+# This class is built to handle various kinds of cutscenes and cutscene-like
+# scenes: particularly, this class works with sequential scenes. Cinematic
+# cutscenes, dialogues, graphics effects, etc, are handled by this class.
+#
+# A cutscene is simply a list of objects, where each object represents a
+# major change in the scene. The scene starts empty, and the first object
+# in the list is applied. This frame object might contain various data about
+# what the scene should look like: a new sound to play, new dialogue to display,
+# or new elements to put in the scene. It might also contain a length (the number
+# of frames to wait until the next frame object is applied, or 0 to wait for the
+# action key to be pressed instead), and a _next_ value (the array index of
+# the next frame object to be applied, or -1 to end the cutscene, or a function
+# that returns said value).
+#
+# Only the changes specified in a frame object will be applied; the rest of
+# the scene will remain the same (except in the case of the _next_ value,
+# which will apply the succeeding frame if left unspecified). To remove
+# something from the cutscene, -1 should be applied.
 class cutscenehandler
   constructor: (@charsheet, @background, @chars, @chararea, @charpos, @nexttxtsnd, @lasttxtsnd) ->
     @text = new surface @background.size()
     @frames = 0
     @choice = -1
 
+  # Set up a new cutscene, default the current frame, and run it.
   initialize: (newscene) ->
     @frames = newscene
     @frame = {len: 0, elem: -1, txt: -1, overlay: -1, snd: -1, next: 0}
     @time = 0
     @next()
 
+  # Check through every element of the frame, and render it to the screen.
+  # If the frame duration has been reached, apply the next frame.
   render: (buffer) ->
     @nexttxtsnd.step()
     @lasttxtsnd.step()
@@ -24,16 +47,22 @@ class cutscenehandler
       @frame.elem isnt -1
     else no
 
+  # If waiting for the action key, and it gets pressed, apply the next frame.
+  # If displaying a choice box and an arrow key gets pressed, change the
+  # current choice and prerender the new box.
   input: (keys) ->
     if @frames isnt 0
       if @frame.len is 0 and keys.act.poll is 1 then @next()
       if keys.act.poll isnt 1 and @choice isnt -1
         @choice += (if @choice < 2 then 2 else -2) if keys.up.poll is 1 or keys.down.poll is 1
-        @choice += (if @choice % 2 is 0 then 1 else -1) if keys.left.poll is 1 or keys.right.poll is 1
+        @choice += (if @choice%2 is 0 then 1 else -1) if keys.left.poll is 1 or keys.right.poll is 1
         @drawchoice @frame.txt
       yes
     else no
 
+  # Advance to the next frame. Decide which frame to use, make the appropriate
+  # changes from the current frame, restart the clock, tell any sounds to play,
+  # and tell any textboxes to prerender themselves.
   next: ->
     nxt = @frame.next
     nxt = nxt @choice if "function" is typeof nxt
@@ -55,6 +84,10 @@ class cutscenehandler
       @lasttxtsnd.play() if @frame.txt isnt -1
       @frames = 0
 
+  # Build a text string to draw, given a ';'-delimited choice string.
+  # A choicebox is in the form `;t;c1;c2[;c3[;c4]]`, where _cX_ are the choices,
+  # and _t_ is the text that comes before them. Add a marker around the current
+  # choice, and space the choices evenly.
   drawchoice: (texttodraw) ->
     choices = (texttodraw.substring 1).split ";", 5
     finalstring = choices.shift()
@@ -68,6 +101,9 @@ class cutscenehandler
       finalstring += currchoice
     @drawtext finalstring
 
+  # Draw the textbox. Copy over the background, go through the string,
+  # and copy over each character from the font sheet. '#' characters are
+  # special characters, and are interpreted as newlines.
   drawtext: (texttodraw) ->
     currline = 0
     currchar = 0
@@ -83,10 +119,13 @@ class cutscenehandler
         currchar = 0
         currline += 1
 
+# **A color fade overlay element.**
+#
+# The simplest overlay element. Fade to or from a certain color over a given time.
 class gradient
-  constructor: (@color, @duration, @type) ->
-    @time = 0
+  constructor: (@color, @duration, @type) -> @time = 0
 
+  # Come up with a fade amount, set the audio volume, and render to the screen.
   render: (buffer) ->
     serv.audio.volume = if @type then 1 - @time/@duration else @time/@duration
     newalpha = if @type then @time/@duration else 1 - @time/@duration
@@ -98,10 +137,15 @@ class gradient
     @time += 1
     @time > @duration
 
+# **An image cutscene element.**
+#
+# The most common cutscene element type, this is a simple still image. It can
+# be controlled per-frame by a callback function, which can determine the
+# position, size, and alpha of the particle.
 class particle
-  constructor: (@image, @callback) ->
-    @time = 0
+  constructor: (@image, @callback) -> @time = 0
 
+  # Run the callback, draw the results, and increment the frame counter.
   render: (buffer) ->
     info = @callback @time
     buffer.ctx.globalAlpha = info[3]
@@ -110,4 +154,5 @@ class particle
     buffer.drawImage @image, dx, dy, info[2]*@image.dims.x, info[2]*@image.dims.y
     @time = info[4]
 
+  # Helper function for sinusoidal fades.
   fadeform: (t, cycle) -> 0.5 + 0.5*Math.cos t*Math.PI/cycle
