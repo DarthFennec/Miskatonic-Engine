@@ -14,7 +14,6 @@ window.addEventListener "load", ->
     keymap = {up: [38, 87, 90, 188], left: [37, 65, 81], down: [40, 79, 83], right: [39, 68, 69], run: [16], act: [13, 32], pause: [27, 80]}
     serv.scene = scenetree.n
     serv.load = new loader
-    serv.formats = new format
     serv.save = new savehandler sysinf.cansaveload
     serv.audio = new soundhandler sysinf.soundext
     serv.reset = (runfirstscene) ->

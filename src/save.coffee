@@ -26,5 +26,5 @@ class savehandler
     serv.reset no
     obj = JSON.parse localStorage.savestate
     serv.scene.loadstate obj.stack
-    serv.formats.callbacks.push -> rend.loadstate obj.local.shift() for rend in serv.engine.rends when rend.loadstate?
+    serv.load.callbacks.push -> rend.loadstate obj.local.shift() for rend in serv.engine.rends when rend.loadstate?
     n

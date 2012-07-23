@@ -23,11 +23,11 @@ class scenenode
       serv.audio.push()
       serv.state = this
       if @filelist.length is 0
-        if serv.formats.callbacks.length is 0 then @init()
-        else serv.formats.callbacks.push => @init()
+        if serv.load.callbacks.length is 0 then @init()
+        else serv.load.callbacks.push => @init()
       else
-        serv.formats.callbacks.push => @init()
-        @file = for file in @filelist then serv.formats.load file
+        serv.load.callbacks.push => @init()
+        @file = for file in @filelist then serv.load.load file
 
   # Exit the current scene node, and return control back to the parent node.
   exitscene: (n) ->

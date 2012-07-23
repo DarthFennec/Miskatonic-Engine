@@ -24,7 +24,7 @@ class soundhandler
     @maxvolume = no
     @muted = 0
     @list = []
-    serv.formats.filetype.push
+    serv.load.filetype.push
       head: "snd/"
       call: (url) ->
         newf = serv.audio.add url + serv.audio.soundext
@@ -32,8 +32,8 @@ class soundhandler
           serv.load.loadcount.push newf
           newf.data.addEventListener "error", ->
             newf.data = -1
-            serv.formats.err newf, url + serv.audio.soundext
-          newf.data.addEventListener "canplaythrough", -> serv.formats.finish newf
+            serv.load.err newf, url + serv.audio.soundext
+          newf.data.addEventListener "canplaythrough", -> serv.load.finish newf
         newf
 
   # Add a sound to the top list in the stack.
