@@ -1,12 +1,12 @@
 pausescreen = (bkgd, img) -> [{
   elem: [new particle bkgd, (t) -> [0, 0, 1, 1, 0]]
-  txt: ";;Continue;Options;Save Game;Quit Game"
+  txt: "\t\tContinue\tOptions\tSave Game\tQuit Game"
   next: (k) -> switch k
     when 0 then -1
     when 2 then (if serv.save.cansaveload then serv.save.savestate 2 else 5)
     else k
 }, {
-  txt: ";;Audio;Controls;Video;Back"
+  txt: "\t\tAudio\tControls\tVideo\tBack"
   next: (k) -> switch k
     when 3 then 0
     when 0 then (if serv.audio.musicext is 0 or serv.audio.soundext is 0 then 6 else 7)
@@ -15,7 +15,7 @@ pausescreen = (bkgd, img) -> [{
   txt: "    Your progress has been saved."
   next: -1
 }, {
-  txt: ";    Are you sure you want to quit?#;Yes;No"
+  txt: "\t    Are you sure you want to quit?\tYes\tNo"
   next: (k) -> if k is 0 then 4 else -1
 }, {
   len: 50
@@ -32,7 +32,7 @@ pausescreen = (bkgd, img) -> [{
   txt: "Your browser does not support audio."
   next: 1
 }, {
-  txt: ";;Mute;Unmute"
+  txt: "\t\tMute\tUnmute"
   next: (k) ->
     serv.audio.mute k is 0
     -1
@@ -52,12 +52,12 @@ pausescreen = (bkgd, img) -> [{
   txt: ""
   next: -1
 }, {
-  txt: ";;Aspect Ratio;3D Effect;Fullscreen;Back"
+  txt: "\t\tAspect Ratio\t3D Effect\tFullscreen\tBack"
   next: (k) -> switch k
     when 3 then 1
     else 10 + k
 }, {
-  txt: ";;4:3;16:10;5:3;16:9"
+  txt: "\t\t4:3\t16:10\t5:3\t16:9"
   next: (k) ->
     switch k
       when 0 then serv.engine.resize new vect 800, 600
@@ -69,11 +69,11 @@ pausescreen = (bkgd, img) -> [{
   txt: "This has not been implemented yet."
   next: -1
 }, {
-  txt: ";;Full Mode;Normal Mode"
+  txt: "\t\tFull Mode\tNormal Mode"
   next: (k) ->
     if k is 0 then serv.engine.fullscreen yes else serv.engine.fullscreen no
     13
 }, {
-  txt: "Please press the F11 key to enter#or leave true fullscreen mode."
+  txt: "Please press the F11 key to enter\nor leave true fullscreen mode."
   next: -1
 }]

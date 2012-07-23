@@ -76,7 +76,7 @@ class cutscenehandler
       @frame.next += 1 if @frame.next is nxt
       @time = 0
       if @frame.txt isnt -1
-        if @frame.txt[0] is ";"
+        if @frame.txt[0] is "\t"
           @choice = 0
           @drawchoice @frame.txt
         else @drawtext @frame.txt
@@ -84,13 +84,14 @@ class cutscenehandler
       @lasttxtsnd.play() if @frame.txt isnt -1
       @frames = 0
 
-  # Build a text string to draw, given a ';'-delimited choice string.
+  # Build a text string to draw, given a tab-delimited choice string.
   # A choicebox is in the form `;t;c1;c2[;c3[;c4]]`, where _cX_ are the choices,
   # and _t_ is the text that comes before them. Add a marker around the current
   # choice, and space the choices evenly.
   drawchoice: (texttodraw) ->
-    choices = (texttodraw.substring 1).split ";", 5
+    choices = (texttodraw.substring 1).split "\t", 5
     finalstring = choices.shift()
+    finalstring += "\n" if finalstring isnt ""
     @choice -= 2 if choices.length is 2 and @choice > 1
     @choice -= 1 if choices.length is 3 and @choice is 3
     choices[@choice] = "> " + choices[@choice] + " <"
@@ -102,20 +103,19 @@ class cutscenehandler
     @drawtext finalstring
 
   # Draw the textbox. Copy over the background, go through the string,
-  # and copy over each character from the font sheet. '#' characters are
-  # special characters, and are interpreted as newlines.
+  # and copy over each character from the font sheet.
   drawtext: (texttodraw) ->
     currline = 0
     currchar = 0
     @text.clear no
     @text.drawImage @background
     for chartodraw in texttodraw when currline < @chars.s.y
-      if chartodraw isnt "#"
+      if chartodraw isnt "\n"
         sy = Math.floor (chartodraw.charCodeAt 0)/16
         sx = (chartodraw.charCodeAt 0) - 16*sy
         @text.map @charsheet, sx, sy, @chararea.s.x, @chararea.s.y, @chars.p.x + currchar, @chars.p.y + currline, @chararea.p.x, @chararea.p.y
         currchar += 1
-      if currchar >= @chars.s.x or chartodraw is "#"
+      if currchar >= @chars.s.x or chartodraw is "\n"
         currchar = 0
         currline += 1
 
