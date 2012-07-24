@@ -4,30 +4,31 @@ iscene = new scenenode ["img/tiles","img/pinkiepie","img/pinkiepie","img/pinkiep
       area : new rect 51, 1368, 96, 96
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
+      active : yes
       vector : (new angle "spr", 2)
       sheet : @file[1]
     new sprite
       area : new rect 1823, 109, 96, 96
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
-      collide : yes
-      aiscript : serv.getai.follow 100, 150, 200
-      interact : yes
+      solid : yes
+      active : yes
       vector : (new angle "spr", -1)
       sheet : @file[2]
-      callback : (subject, object) =>
-        @child[1].initialize()
+      aiscripts :
+        frame : serv.getai.follow 100, 150, 200
+        interact : (subject, object) =>
+          @child[1].initialize()
     new sprite
       area : new rect 1013, 661, 96, 96
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
-      collide : yes
-      interact : yes
-      passive : yes
+      solid : yes
       sheet : @file[3]
-      callback : (subject, object) =>
-        subject.vector.set "pts", subject.area.p, object.area.p
-        @child[0].initialize()
+      aiscripts :
+        interact : (subject, object) =>
+          subject.vector.set "pts", subject.area.p, object.area.p
+          @child[0].initialize()
     new tileset (new vect 100, 100), @file[0], (@file[4].init 0, 15), "#000000", [
       [-7,-7,-7,-7,-7,1,2,3,-7,1,18,26,16,3,-7,1,2,2,2,3]
       [-7,16,17,3,-7,27,12,9,-7,10,14,12,15,8,-7,27,12,12,12,8]

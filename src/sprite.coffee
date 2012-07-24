@@ -2,17 +2,14 @@
 #
 # - sheet: The spritesheet.
 # - area: The position and size of the sprite.
-# - callback: Called in trigger and interact events.
-# - aiscript: Called every frame.
 # - len: Animation length for each mode.
 # - speed: Movement speed for each mode.
-# - collide: _true_ if the sprite is solid.
-# - trigger: _true_ if there's a trigger event.
-# - interact: _true_ if there's an interact event.
-# - passive: _true_ if the sprite doesn't move/collide.
+# - solid: _true_ if the sprite is solid.
+# - active: _true_ if the sprite can move and collide.
 # - vector: The direction the sprite is pointing.
 # - mode: The mode (standing, walking, running, etc).
 # - frame: The animation frame index.
+# - aiscripts: A list of callback functions to call under various circumstances.
 #
 # Sprites can represent anything from maps to player characters to NPCs
 # to invisible trigger fields to interactive stationary objects, etc etc.
@@ -20,20 +17,18 @@
 class sprite
   constructor: (args) ->
     def =
-      sheet    : 0
-      area     : new rect 0, 0, 0, 0
-      callback : 0
-      aiscript : 0
-      len      : []
-      speed    : []
-      collide  : false
-      trigger  : false
-      interact : false
-      passive  : false
-      vector   : new angle "spr", 0
-      mode     : 0
-      frame    : 0
+      sheet     : 0
+      area      : new rect 0, 0, 0, 0
+      len       : []
+      speed     : []
+      solid     : false
+      active    : false
+      vector    : new angle "spr", 0
+      mode      : 0
+      frame     : 0
+      aiscripts : {}
     @[prop] = args[prop] ? def[prop] for prop of def
+    @aiscripts.sprite = this if @aiscripts isnt {}
     if @sheet isnt 0
       tmp = @sheet
       @sheet = new surface new vect 8*@area.s.x, tmp.dims.y
@@ -56,8 +51,8 @@ class sprite
   # sprite to the alternate edge of the other. If every distance is positive,
   # there is an overlap, so determine the direction of least overlap and
   # push the sprite out in that direction (if the sprite is solid), and/or
-  # trigger an event (if the corresponding flag is set).
-  docollide: (spr) ->
+  # trigger an event (if there is one to trigger).
+  collide: (spr) ->
     off1 = spr.area.p.x + spr.area.s.x - @area.p.x
     off2 = spr.area.p.y + spr.area.s.y - @area.p.y
     off3 = @area.p.x + @area.s.x - spr.area.p.x
@@ -65,7 +60,7 @@ class sprite
     offx = 1
     offset = off1
     if off1 > 0 and off2 > 0 and off3 > 0 and off4 > 0
-      if @collide
+      if @solid
         if offset > off2
           offset = off2
           offx = 2
@@ -79,21 +74,21 @@ class sprite
         spr.area.p.y -= offset if offx is 2
         spr.area.p.x += offset if offx is 3
         spr.area.p.y += offset if offx is 4
-      if @trigger
+      if @aiscripts.trigger?
         spr.mode = 0
-        @callback this, spr
+        @aiscripts.trigger this, spr
 
   # When the action key is pressed, and a sprite is within the main sprite's
   # field of view (in this case, less than half a sprite away in the direction
-  # the main sprite is facing), a sprite might "interact" via its _callback_.
-  dointeract: (spr) ->
+  # the main sprite is facing), a sprite might "interact" via a callback.
+  interact: (spr) ->
     offx = new rect spr.area.p.x, spr.area.p.y, spr.area.s.x, spr.area.s.y
     offx.p.l (k) -> offx.p.i(k) + (spr.vector.get "kbd").i(k)*offx.s.i(k)/2
     off1 = (new vect).l (k) => offx.p.i(k) + offx.s.i(k) - @area.p.i(k)
     off2 = (new vect).l (k) => @area.p.i(k) + @area.s.i(k) - offx.p.i(k)
     if off1.x > 0 and off1.y > 0 and off2.x > 0 and off2.y > 0
       spr.mode = 0
-      @callback this, spr
+      @aiscripts.interact this, spr
 
   # Gather and return data to be saved.
   savestate: -> {px: @area.p.x, py: @area.p.y, md: @mode, fr: @frame, vx: @vector.get "spr"}

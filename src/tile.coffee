@@ -11,7 +11,7 @@ class tileset extends sprite
     @musicplaying = @bgmusic is 0
     serv.engine.bgcolor = bgcolor
     serv.engine.buffer.ctx.fillStyle = bgcolor
-    super {collide: true, passive: true, area: new rect 0, 0, @tilesize.x, @tilesize.y}
+    super {solid: true, area: new rect 0, 0, @tilesize.x, @tilesize.y}
     gridsize = new vect grid[0].length, grid.length
     @sheet = new surface (new vect).l (k) => @tilesize.i(k)*gridsize.i(k)
     width = @tilesheet.dims.x/@tilesize.x
@@ -34,7 +34,7 @@ class tileset extends sprite
 
   # Check squares that are near the sprite. If any of them are negative,
   # and close enough to collide with, then run collision detection.
-  docollide: (spr) ->
+  collide: (spr) ->
     block = (new vect).l (k) => 1 + Math.floor spr.area.p.i(k)/@tilesize.i(k)
     mid = (new vect).l (k) => 1 + (Math.floor (spr.area.p.i(k) + spr.area.s.i(k)/2)/@tilesize.i(k)) - block.i(k)
     central = 1 + mid.x + mid.y*2

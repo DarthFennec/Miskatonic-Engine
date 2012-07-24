@@ -15,9 +15,9 @@ class scenehandler
   # Render all the sprites, after solving all AI and collisions.
   render: (buffer) ->
     if @currscene isnt 0
-      for sprite in @currscene when not sprite.passive
-        scene.docollide sprite for scene in @currscene when sprite isnt scene
-        sprite.aiscript @currscene if sprite.aiscript isnt 0
+      for sprite in @currscene when sprite.active
+        scene.collide sprite for scene in @currscene when sprite isnt scene
+        sprite.aiscripts.frame? @currscene
       f = (new vect).l (k) => @currscene[0].area.p.i(k) + (@currscene[0].area.s.i(k) - buffer.dims.i(k))/2
       sprite.step buffer, f for sprite in @currscene
       yes
@@ -29,7 +29,7 @@ class scenehandler
       if keys.right.state is keys.left.state and keys.down.state is keys.up.state then @currscene[0].mode = 0 else
         @currscene[0].mode = if keys.run.state is 1 then 2 else 1
         @currscene[0].vector.set "kbd", new vect keys.right.state - keys.left.state, keys.down.state - keys.up.state
-      if keys.act.poll is 1 then for scene in @currscene when scene.interact then scene.dointeract @currscene[0]
+      if keys.act.poll is 1 then for scene in @currscene when scene.aiscripts.interact? then scene.interact @currscene[0]
       yes
     else no
 
