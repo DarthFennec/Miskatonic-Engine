@@ -67,3 +67,11 @@ class aiscripts
         vectdir.y = -1 if vectdir.y is 0 and @sprite.area.p.y + 2*@sprite.area.s.y > mapsrc.tilesize.y*(srcpos.y + 1) and graph.input[srcpos.x + vectdir.x][srcpos.y + 1] is 1
         @sprite.vector.set "kbd", vectdir
         @sprite.mode = if outrad < distance then 2 else 1
+
+  # Move around when the player uses the keyboard.
+  keyboard: ->
+    (scenegraph, keys) ->
+      if keys.right.state is keys.left.state and keys.down.state is keys.up.state then @sprite.mode = 0 else
+        @sprite.vector.set "kbd", new vect keys.right.state - keys.left.state, keys.down.state - keys.up.state
+        @sprite.mode = if keys.run.state is 1 then 2 else 1
+      if keys.act.poll is 1 then for scene in scenegraph when scene.aiscripts.interact? then scene.interact @sprite

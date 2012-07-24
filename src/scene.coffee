@@ -4,7 +4,7 @@
 # A scene is simply a list of [sprites](sprite.html), and/or sprite-like
 # objects such as [tile maps](tile.html). Normally, there is one tilemap,
 # which should be placed at the end of the list. Also, the first sprite in
-# the list will be the scene focus, and can be controlled with the keyboard.
+# the list will be the scene focus, so should be the main sprite.
 # Any other sprites in the scene should be placed between these two.
 class scenehandler
   constructor: -> @currscene = 0
@@ -15,21 +15,18 @@ class scenehandler
   # Render all the sprites, after solving all AI and collisions.
   render: (buffer) ->
     if @currscene isnt 0
-      for sprite in @currscene when sprite.active
-        scene.collide sprite for scene in @currscene when sprite isnt scene
+      for sprite in @currscene
+        if sprite.active then (scene.collide sprite for scene in @currscene when sprite isnt scene)
         sprite.aiscripts.frame? @currscene
       f = (new vect).l (k) => @currscene[0].area.p.i(k) + (@currscene[0].area.s.i(k) - buffer.dims.i(k))/2
       sprite.step buffer, f for sprite in @currscene
       yes
     else no
 
-  # On keyboard input, change the state of sprite 0, and check for action events to be handled.
+  # On keyboard input, change the state of sprite 0, and check for input events to be handled.
   input: (keys) ->
     if @currscene isnt 0
-      if keys.right.state is keys.left.state and keys.down.state is keys.up.state then @currscene[0].mode = 0 else
-        @currscene[0].mode = if keys.run.state is 1 then 2 else 1
-        @currscene[0].vector.set "kbd", new vect keys.right.state - keys.left.state, keys.down.state - keys.up.state
-      if keys.act.poll is 1 then for scene in @currscene when scene.aiscripts.interact? then scene.interact @currscene[0]
+      sprite.aiscripts.input? @currscene, keys for sprite in @currscene
       yes
     else no
 
