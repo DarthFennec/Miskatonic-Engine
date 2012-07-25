@@ -7,6 +7,7 @@ iscene = new scenenode ["img/tiles","img/pinkiepie","img/pinkiepie","img/pinkiep
       active : yes
       vector : (new angle "spr", 2)
       sheet : @file[1]
+      focus : yes
       aiscripts :
         input : serv.getai.keyboard()
     new sprite

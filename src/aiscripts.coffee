@@ -7,8 +7,8 @@ class aiscripts
   # Turn to face the main sprite, if it is within a given radius.
   watch: (radius) ->
     (scenegraph) ->
-      distance = (Math.pow @sprite.area.p.x - scenegraph[0].area.p.x, 2) + (Math.pow @sprite.area.p.y - scenegraph[0].area.p.y, 2)
-      @sprite.vector.set "pts", @sprite.area.p, scenegraph[0].area.p if distance < radius*radius
+      distance = (Math.pow @sprite.area.p.x - scenegraph.focus.area.p.x, 2) + (Math.pow @sprite.area.p.y - scenegraph.focus.area.p.y, 2)
+      @sprite.vector.set "pts", @sprite.area.p, scenegraph.focus.area.p if distance < radius*radius
 
   # Move and change direction randomly, given some stability of motion.
   random: (stability) ->
@@ -28,11 +28,11 @@ class aiscripts
     oldpos = new vect -1, -1
     (scenegraph) ->
       mapsrc = scenegraph[scenegraph.length - 1]
-      dist = new vect (Math.abs @sprite.area.p.x - scenegraph[0].area.p.x), (Math.abs @sprite.area.p.y - scenegraph[0].area.p.y)
+      dist = new vect (Math.abs @sprite.area.p.x - scenegraph.focus.area.p.x), (Math.abs @sprite.area.p.y - scenegraph.focus.area.p.y)
       if graph is 0 then graph = new Graph mapsrc.grid.map (x) -> x.map (y) -> (if y < 0 then 1 else 0)
       distance = if dist.x > dist.y then dist.x else dist.y
       srcpos = (new vect).l (k) => 1 + Math.floor @sprite.area.p.i(k)/mapsrc.tilesize.i(k)
-      destpos = (new vect).l (k) => 1 + Math.floor scenegraph[0].area.p.i(k)/mapsrc.tilesize.i(k)
+      destpos = (new vect).l (k) => 1 + Math.floor scenegraph.focus.area.p.i(k)/mapsrc.tilesize.i(k)
       if oldpos.x isnt destpos.x or oldpos.y isnt destpos.y
         oldpos = new vect destpos.x, destpos.y
         path = astar.search graph.nodes, graph.nodes[srcpos.x][srcpos.y], graph.nodes[destpos.x][destpos.y]
@@ -40,7 +40,7 @@ class aiscripts
       if distance <= bumprad
         dirp = 0
         dirn = 0
-        vctr = scenegraph[0].vector.get "kbd"
+        vctr = scenegraph.focus.vector.get "kbd"
         if dist.x < dist.y
           if vctr.y isnt 0
             if vctr.x isnt 0 then @sprite.vector.set "kbd", new vect -vctr.x, 0 else
@@ -56,7 +56,7 @@ class aiscripts
               @sprite.vector.set "kbd", new vect 0, if dirp > dirn then 1 else -1
             @sprite.mode = 2
       if bumprad < distance <= inrad
-        @sprite.vector.set "pts", @sprite.area.p, scenegraph[0].area.p
+        @sprite.vector.set "pts", @sprite.area.p, scenegraph.focus.area.p
         @sprite.mode = 0
       if inrad < distance and path.length > 0
         vectdir = new vect

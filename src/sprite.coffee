@@ -9,6 +9,8 @@
 # - vector: The direction the sprite is pointing.
 # - mode: The mode (standing, walking, running, etc).
 # - frame: The animation frame index.
+# - focus: _true_ if the camera centers on this sprite.
+# - bottom: _true_ if the sprite is always on the bottom.
 # - aiscripts: A list of callback functions to call under various circumstances.
 #
 # Sprites can represent anything from maps to player characters to NPCs
@@ -17,15 +19,17 @@
 class sprite
   constructor: (args) ->
     def =
-      sheet     : 0
-      area      : new rect 0, 0, 0, 0
-      len       : []
-      speed     : []
-      solid     : false
-      active    : false
-      vector    : new angle "spr", 0
-      mode      : 0
-      frame     : 0
+      sheet : 0
+      area : new rect 0, 0, 0, 0
+      len : []
+      speed : []
+      solid : no
+      active : no
+      vector : new angle "spr", 0
+      mode : 0
+      frame : 0
+      focus : no
+      bottom : no
       aiscripts : {}
     @[prop] = args[prop] ? def[prop] for prop of def
     @aiscripts.sprite = this if @aiscripts isnt {}
