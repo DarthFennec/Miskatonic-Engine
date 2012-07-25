@@ -2,6 +2,7 @@ iscene = new scenenode ["img/tiles","img/pinkiepie","img/pinkiepie","img/pinkiep
   -> serv.inscenemgr.initialize [
     new sprite
       area : new rect 51, 1368, 96, 96
+      carea : new rect 24, 24, 72, 72
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
       active : yes
@@ -12,6 +13,7 @@ iscene = new scenenode ["img/tiles","img/pinkiepie","img/pinkiepie","img/pinkiep
         input : serv.getai.keyboard()
     new sprite
       area : new rect 1823, 109, 96, 96
+      carea : new rect 24, 24, 72, 72
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
       solid : yes
@@ -24,6 +26,7 @@ iscene = new scenenode ["img/tiles","img/pinkiepie","img/pinkiepie","img/pinkiep
           @child[1].initialize()
     new sprite
       area : new rect 1013, 661, 96, 96
+      carea : new rect 24, 24, 72, 72
       len : [0, 1, 7, 13]
       speed : [0, 3, 9]
       solid : yes

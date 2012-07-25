@@ -2,6 +2,7 @@
 #
 # - sheet: The spritesheet.
 # - area: The position and size of the sprite.
+# - carea: The relative collision rectangle of the sprite.
 # - len: Animation length for each mode.
 # - speed: Movement speed for each mode.
 # - solid: _true_ if the sprite is solid.
@@ -21,6 +22,7 @@ class sprite
     def =
       sheet : 0
       area : new rect 0, 0, 0, 0
+      carea : new rect 0, 0, 0, 0
       len : []
       speed : []
       solid : no
@@ -57,10 +59,10 @@ class sprite
   # push the sprite out in that direction (if the sprite is solid), and/or
   # trigger an event (if there is one to trigger).
   collide: (spr) ->
-    off1 = spr.area.p.x + spr.area.s.x - @area.p.x
-    off2 = spr.area.p.y + spr.area.s.y - @area.p.y
-    off3 = @area.p.x + @area.s.x - spr.area.p.x
-    off4 = @area.p.y + @area.s.y - spr.area.p.y
+    off1 = spr.area.p.x + spr.carea.s.x - @area.p.x - @carea.p.x
+    off2 = spr.area.p.y + spr.carea.s.y - @area.p.y - @carea.p.y
+    off3 = @area.p.x + @carea.s.x - spr.area.p.x - spr.carea.p.x
+    off4 = @area.p.y + @carea.s.y - spr.area.p.y - spr.carea.p.y
     offx = 1
     offset = off1
     if off1 > 0 and off2 > 0 and off3 > 0 and off4 > 0
