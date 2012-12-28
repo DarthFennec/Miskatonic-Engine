@@ -25,6 +25,7 @@ class engine
   resize: (s) ->
     t = @buffer.size()
     if s.x isnt t.x or s.y isnt t.y
+      serv.screen.resize 0, s
       @screen.size s
       @buffer.size s
       @buffer.ctx.fillStyle = @bgcolor
@@ -32,9 +33,6 @@ class engine
       @buffer.ctx.lineWidth = 25
       @buffer.ctx.lineCap = "round"
       @buffer.ctx.globalCompositeOperation = "destination-over"
-
-  # Simulate a fullscreen mode via a CSS class.
-  fullscreen: (k) -> @screen.buf.className = if k then "fullscreen" else ""
 
   # Intercept keyboard events and pass them down the stack.  
   # Bind to the _keyUp_ and _keyDown_ events. Find the keycode in the list,

@@ -4,14 +4,15 @@ serv = {}
 # Initial function. Create and set up a minimal working engine object,
 # bind its IO to the DOM, and load the root scene.
 window.onload = ->
-  screen = new surface document.getElementById "miskatonic"
-  sysinf = new systeminformation
-  if not sysinf.basicsupport then screen.buf.parentNode.replaceChild screen.buf.firstChild, screen.buf else
+  serv.screen = new screenhandler ["display", "miskatonic", "errorbox"]
+  screen = new surface serv.screen.elem[1]
+  serv.screen.getsysteminfo()
+  if not serv.screen.basicsupport then serv.screen.unwrap 1 else
     keymap = up: [38, 87, 90, 188], left: [37, 65, 81], down: [40, 79, 83], right: [39, 68, 69], run: [16], act: [13, 32], pause: [27, 80]
     serv.global = {}
     serv.load = new loader
-    serv.save = new savehandler sysinf.cansaveload
-    serv.audio = new soundhandler sysinf.soundext
+    serv.save = new savehandler serv.screen.cansaveload
+    serv.audio = new soundhandler serv.screen.soundext
     serv.extern = new extscene
     serv.reset = ->
       serv.audio.erase()
