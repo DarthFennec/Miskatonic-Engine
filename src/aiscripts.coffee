@@ -31,8 +31,8 @@ class aiscripts
       dist = new vect (Math.abs @sprite.area.p.x - scenegraph.focus.area.p.x), (Math.abs @sprite.area.p.y - scenegraph.focus.area.p.y)
       if graph is 0 then graph = new Graph mapsrc.grid.map (x) -> x.map (y) -> (if y < 0 then 1 else 0)
       distance = if dist.x > dist.y then dist.x else dist.y
-      srcpos = (new vect).l (k) => 1 + Math.floor @sprite.area.p.i(k)/mapsrc.tilesize.i(k)
-      destpos = (new vect).l (k) => 1 + Math.floor scenegraph.focus.area.p.i(k)/mapsrc.tilesize.i(k)
+      srcpos = (new vect).l (k) => 1 + Math.floor (@sprite.area.p.i(k) + @sprite.carea.p.i(k))/mapsrc.tilesize.i(k)
+      destpos = (new vect).l (k) => 1 + Math.floor (scenegraph.focus.area.p.i(k) + scenegraph.focus.carea.p.i(k))/mapsrc.tilesize.i(k)
       if oldpos.x isnt destpos.x or oldpos.y isnt destpos.y
         oldpos = new vect destpos.x, destpos.y
         path = astar.search graph.nodes, graph.nodes[srcpos.x][srcpos.y], graph.nodes[destpos.x][destpos.y]

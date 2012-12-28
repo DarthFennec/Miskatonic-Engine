@@ -57,7 +57,11 @@ class loader
 
   # Call when there is an error in loading a file.
   err: (newf, fname) ->
-    window.alert "Error: failed to load " + fname.substring 1 + fname.lastIndexOf "/"
+    errline = document.createElement "div"
+    errline.innerText = "Error: failed to load " + fname
+    errbox = document.getElementById "errorbox"
+    errbox.appendChild errline
+    window.setTimeout (-> errbox.removeChild errline), 10000
     @finish newf
 
   # Call when a file is finished loading. Removes itself from the list,

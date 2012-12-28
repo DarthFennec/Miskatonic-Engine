@@ -5,6 +5,24 @@
 <script type="text/javascript" src="astar-min.js"></script>
 <script type="text/javascript" src="miskatonic.js"></script>
 <style>
+#display {
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+#display > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#errorbox {
+  z-index: 1;
+}
+#errorbox > div {
+  color: red;
+  font-size: large;
+  font-weight: bold;
+}
 .fullscreen {
   position: fixed;
   left: 0;
@@ -14,7 +32,8 @@
 }
 </style>
 </head>
-<body><center>
+<body><center><div id="display">
+<div id="errorbox"></div>
 <canvas id="miskatonic" width="800" height="600">Unsupported Browser</canvas>
-</center></body>
+</div></center></body>
 </html>

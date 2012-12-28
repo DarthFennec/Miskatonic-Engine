@@ -2,7 +2,17 @@
 #
 # A modified cutscene object that acts as a pause screen/options menu.
 class pauser
-  constructor: (@underlay, @display, @menu, @obj, @pausesnd, @unpausesnd) -> @pressed = 0
+  constructor: (@underlay, text, @obj, @pausesnd, @unpausesnd) ->
+    @display = new surface @underlay.size()
+    node = serv.extern.setscene text, @obj
+    node.initialize serv.state, -1
+    serv.load.callbacks.push =>
+      @menu = @obj.frames
+      @obj.frames = 0
+    node.file.push @display
+    node.canreeval = no
+    node.exitscene()
+    @pressed = 0
 
   # Check for a state change given by the last keypress. If unpaused, set
   # an exit status on the cutscene. If paused, initialize the cutscene and

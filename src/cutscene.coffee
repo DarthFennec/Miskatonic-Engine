@@ -25,9 +25,9 @@ class cutscenehandler
     @choice = -1
 
   # Set up a new cutscene, default the current frame, and run it.
-  initialize: (newscene) ->
-    @frames = newscene
+  initialize: (@frames) ->
     @frame = {len: 0, elem: -1, txt: -1, overlay: -1, snd: -1, next: 0}
+    @framestate = {len: -1, elem: -1, txt: -1, overlay: -1, snd: -1, next: -1}
     @time = 0
     @next()
 
@@ -72,7 +72,9 @@ class cutscenehandler
         if @frames[nxt].txt is -1 then @lasttxtsnd.play()
         else if @frame.txt isnt -1 then @nexttxtsnd.play()
       @frames[nxt].snd?.play?() if @frame.snd isnt @frames[nxt].snd
-      @frame[n] = @frames[nxt][n] for n of @frames[nxt]
+      for n of @frames[nxt]
+        @frame[n] = @frames[nxt][n]
+        @framestate[n] = nxt
       @frame.next += 1 if @frame.next is nxt
       @time = 0
       if @frame.txt isnt -1
@@ -110,14 +112,36 @@ class cutscenehandler
     @text.clear no
     @text.drawImage @background
     for chartodraw in texttodraw when currline < @chars.s.y
-      if chartodraw isnt "\n"
+      if chartodraw isnt "\n" and chartodraw isnt " "
         sy = Math.floor (chartodraw.charCodeAt 0)/16
         sx = (chartodraw.charCodeAt 0) - 16*sy
         @text.map @charsheet, sx, sy, @chararea.s.x, @chararea.s.y, @chars.p.x + currchar, @chars.p.y + currline, @chararea.p.x, @chararea.p.y
-        currchar += 1
+      currchar += 1
       if currchar >= @chars.s.x or chartodraw is "\n"
         currchar = 0
         currline += 1
+
+  # Gather and return data to be saved.
+  savestate: -> if @frames isnt 0
+    choice: @choice
+    time: @time
+    frame: @framestate
+    state: do =>
+      ret = {}
+      for n of @frame
+        if @frame[n] instanceof Array then ret[n] = (k.savestate?() for k in @frame[n])
+        else ret[n] = @frame[n].savestate?()
+      ret
+
+  # Distribute saved data into the sprite list.
+  loadstate: (state) -> if @frames isnt 0 and state?
+    @choice = state.choice
+    @time = state.time
+    @framestate = state.frame
+    @frame[n] = @frames[@framestate[n]][n] for n of @frame when @framestate[n] isnt -1
+    for n of @frame
+      if @frame[n] instanceof Array then for k, i in @frame[n] then k.loadstate? state.state[n][i]
+      else @frame[n].loadstate? state.state[n]
 
 # **A color fade overlay element.**
 #
@@ -137,6 +161,12 @@ class gradient
     @time += 1
     @time > @duration
 
+  # Gather and return data to be saved.
+  savestate: -> @time
+
+  # Distribute saved data.
+  loadstate: (state) -> @time = state
+
 # **An image cutscene element.**
 #
 # The most common cutscene element type, this is a simple still image. It can
@@ -153,6 +183,12 @@ class particle
     dy = info[1] + (buffer.dims.y - @image.dims.y*info[2])/2
     buffer.drawImage @image, dx, dy, info[2]*@image.dims.x, info[2]*@image.dims.y
     @time = info[4]
+
+  # Gather and return data to be saved.
+  savestate: -> @time
+
+  # Distribute saved data.
+  loadstate: (state) -> @time = state
 
   # Helper function for sinusoidal fades.
   fadeform: (t, cycle) -> 0.5 + 0.5*Math.cos t*Math.PI/cycle

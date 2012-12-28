@@ -5,19 +5,22 @@
 # node. All the scene nodes in a game are connected together as a single
 # tree structure, with the game node as the root.
 class scenenode
-  constructor: (@filelist, @init, @callback) -> @canreeval = yes
+  constructor: (@child, @filelist, @init, @callback) -> @canreeval = yes
 
-  # Build the scene tree from a simplified representation _tree_.  
-  # _tree_ should be an object with a member _n_ (the _scenenode_ object)
-  # and a member _c_ (an array of child _tree_s).
-  buildtree: (tree, @parent, @idx) ->
-    @child = []
-    for child, idx in tree
-      @child[idx] = child.n
-      child.n.buildtree child.c, this, idx
+  # Tell a particular child node to initialize itself.
+  initchild: (idx, callback) ->
+    if typeof @child[idx] is "string"
+      json = serv.load.load @child[idx]
+      serv.load.callbacks.push =>
+        child = serv.extern.setscene json.txt
+        child.initialize this, idx
+        callback? child
+    else
+      @child[idx].initialize this, idx
+      callback? @child[idx]
 
-  # Initialize this child node, load resources, and run it.
-  initialize: ->
+  # Initialize this node, load resources, and run it.
+  initialize: (@parent, @idx) ->
     if @canreeval
       @file = []
       serv.audio.push()
@@ -26,8 +29,8 @@ class scenenode
         if serv.load.callbacks.length is 0 then @init()
         else serv.load.callbacks.push => @init()
       else
-        serv.load.callbacks.push => @init()
         @file = for file in @filelist then serv.load.load file
+        serv.load.callbacks.push => @init()
 
   # Exit the current scene node, and return control back to the parent node.
   exitscene: (n) ->
@@ -37,17 +40,14 @@ class scenenode
     n
 
   # Crawl through the tree to find the branch to the currently running node, and return it.
-  savestate: (state) ->
-    ret = 0
-    if state is this then ret = [@idx]
-    else for c in @child when (l = c.savestate state) instanceof Array
-      ret = l
-      ret.unshift @idx
-    ret
+  savestate: ->
+    if this is serv.scene then []
+    else
+      rtn = @parent.savestate()
+      rtn.push @idx
+      rtn
 
   # Crawl down the saved branch and initialize all in-use nodes.
-  loadstate: (stack) ->
-    @initialize()
-    if stack.length > 0
-      idx = stack.shift()
-      @child[idx].loadstate stack
+  loadstate: (stack) -> if stack.length > 0
+    idx = stack.shift()
+    @initchild idx, (n) -> n.loadstate stack

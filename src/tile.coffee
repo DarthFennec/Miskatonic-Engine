@@ -4,14 +4,14 @@
 # don't move, etc. A map is made of rectangular tiles from a _tilesheet_, which are
 # indexed starting from 1, increasing from left to right and then from top to bottom.
 # The _grid_ is a 2D array of integers, each element representing the index on the _tilesheet_
-# of the tile in that spot. These numbers are negative if they are sold walls, and
+# of the tile in that spot. These numbers are negative if they are solid walls, and
 # positive otherwise. The tile map should be at the bottom of the sprite stack.
 class tileset extends sprite
   constructor: (@tilesize, @tilesheet, @bgmusic, bgcolor, grid) ->
     @musicplaying = @bgmusic is 0
     serv.engine.bgcolor = bgcolor
     serv.engine.buffer.ctx.fillStyle = bgcolor
-    super {solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect -24, -15, 124, 120)}
+    super {solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect 0, 0, @tilesize.x, @tilesize.y)}
     gridsize = new vect grid[0].length, grid.length
     @sheet = new surface (new vect).l (k) => @tilesize.i(k)*gridsize.i(k)
     width = @tilesheet.dims.x/@tilesize.x

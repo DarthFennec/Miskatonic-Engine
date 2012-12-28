@@ -5,15 +5,15 @@
 # - Any renderable layer can "block" all layers below it, by returning _true_.
 # - Keep track of key binding data and the screen and renderbuffer surfaces.
 class engine
-  constructor: (@rends, scenetree, @screen, keymap) ->
+  constructor: (@rends, @screen, keymap) ->
     @keys = {}
-    for key of keymap then @keys[key] = {val: keymap[key], poll: 0, state: 0}
+    for key of keymap then @keys[key] = val: keymap[key], poll: 0, state: 0
     @bgcolor = "#000000"
     @buffer = new surface new vect 0, 0
     @resize @screen.size()
-    scenetree.n.buildtree scenetree.c, 0, 0
-    scenetree.n.initialize()
-    serv.reset yes
+    serv.scene.initialize 0, 0
+    serv.reset()
+    serv.scene.initchild 0
 
   # Change the size of the _screen_ and _buffer_ canvases.  
   # Used during construction and when the aspect ratio is changed in the settings menu.

@@ -10,9 +10,9 @@ class scenehandler
   initialize: (@currscene) ->
     if @currscene isnt 0
       @currscene.focus = @currscene[0]
-      for sprite in @currscene then if sprite.focus
-        @currscene.focus = sprite
-        break
+      for sprite, index in @currscene
+        @currscene.focus = sprite if sprite.focus
+        sprite.index = index
 
   # Render all the sprites, after solving all AI and collisions.
   render: (buffer) ->
@@ -34,7 +34,10 @@ class scenehandler
     else no
 
   # Gather and return data to be saved.
-  savestate: -> if @currscene isnt 0 then (sprite.savestate() for sprite in @currscene)
+  savestate: -> if @currscene isnt 0
+    ret = []
+    ret[sprite.index] = sprite.savestate() for sprite in @currscene
+    ret
 
   # Distribute saved data into the sprite list.
-  loadstate: (state) -> if @currscene isnt 0 then (sprite.loadstate state[i] for sprite, i in @currscene)
+  loadstate: (state) -> if @currscene isnt 0 and state? then (sprite.loadstate state[sprite.index] for sprite in @currscene)

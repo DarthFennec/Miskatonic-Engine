@@ -8,7 +8,7 @@ class audio
     @paused = no
     @oldset = no
     @newset = no
-    @mode = {stop: 0, play: 1, pause: 2}
+    @mode = stop: 0, play: 1, pause: 2
     @datamode = @mode.stop
     @data = new Audio
     @data.src = sndurl
