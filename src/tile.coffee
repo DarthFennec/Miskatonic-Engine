@@ -13,7 +13,7 @@ class tileset extends sprite
     serv.engine.buffer.ctx.fillStyle = bgcolor
     super {solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect 0, 0, @tilesize.x, @tilesize.y)}
     gridsize = new vect grid[0].length, grid.length
-    @sheet = new surface (new vect).l (k) => @tilesize.i(k)*gridsize.i(k)
+    @sheet = new surface new vect @tilesize.x*gridsize.x, @tilesize.y*gridsize.y
     width = @tilesheet.dims.x/@tilesize.x
     @grid = for i in [0...(gridsize.x + 2)] then for j in [0...(gridsize.y + 2)]
       if i is 0 or j is 0 or i is gridsize.x + 1 or j is gridsize.y + 1 then -1
@@ -30,13 +30,14 @@ class tileset extends sprite
       serv.audio.maxvolume = yes
       @bgmusic.play()
     @bgmusic.step() if @bgmusic isnt 0
-    buff.layer @sheet, (new vect).l (k) => offset.i(k) + buff.dims.i(k)/2
+    buff.layer @sheet, new vect offset.x + buff.dims.x/2, offset.y + buff.dims.y/2
 
   # Check squares that are near the sprite. If any of them are negative,
   # and close enough to collide with, then run collision detection.
   collide: (spr) ->
-    block = (new vect).l (k) => 1 + Math.floor spr.area.p.i(k)/@tilesize.i(k)
-    mid = (new vect).l (k) => 1 + (Math.floor (spr.area.p.i(k) + spr.area.s.i(k)/2)/@tilesize.i(k)) - block.i(k)
+    block = new vect (1 + Math.floor spr.area.p.x/@tilesize.x), 1 + Math.floor spr.area.p.y/@tilesize.y
+    mid = new vect (1 + (Math.floor (spr.area.p.x + spr.area.s.x/2)/@tilesize.x) - block.x),
+      1 + (Math.floor (spr.area.p.y + spr.area.s.y/2)/@tilesize.y) - block.y
     central = 1 + mid.x + mid.y*2
     if @grid[block.x][block.y] < 0 and (central isnt 4 or (@grid[block.x][block.y + 1] > 0 and @grid[block.x + 1][block.y] > 0))
       @area.p.x = (block.x - 1)*@area.s.x

@@ -21,7 +21,8 @@ class scenehandler
       for sprite in @currscene
         if sprite.active then (scene.collide sprite for scene in @currscene when sprite isnt scene)
         sprite.aiscripts.frame? @currscene
-      f = (new vect).l (k) => @currscene.focus.area.p.i(k) + (@currscene.focus.area.s.i(k) - buffer.dims.i(k))/2
+      f = new vect @currscene.focus.area.p.x + (@currscene.focus.area.s.x - buffer.dims.x)/2,
+        @currscene.focus.area.p.y + (@currscene.focus.area.s.y - buffer.dims.y)/2
       sprite.step buffer, f for sprite in @currscene
       yes
     else no

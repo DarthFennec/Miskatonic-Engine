@@ -1,24 +1,8 @@
 # **The vector implementation.**
 #
-# - Support 2D vectors stored with x and y components.
-# - Builtin support for component-wise vector math.
+# Support 2D vectors stored with x and y components.
 class vect
   constructor: (@x, @y) ->
-
-  # Component-wise vector math. Example:  
-  # `foo.l (k) -> bar.i(k) + baz.j(k)` is equivalent to  
-  # `foo.x = bar.x + baz.y`  
-  # `foo.y = bar.y + baz.x`
-  l: (func) ->
-    @x = func yes
-    @y = func no
-    this
-
-  # Usually used from within the _l_ callback.  
-  # _i_ is the primary component, and _j_ is the alternate component.
-  i: (k) -> if k then @x else @y
-
-  j: (k) -> if k then @y else @x
 
 # **The rectangle implementation.**
 #

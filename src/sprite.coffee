@@ -50,7 +50,9 @@ class sprite
     if @sheet isnt 0
       @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
       buff.map @sheet, (3 + @vector.get "spr"), (Math.floor @frame), @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
-      @area.p.l (k) => @area.p.i(k) + @speed[@mode]*(@vector.get "vlc").i(k)
+      vect = @vector.get "vlc"
+      @area.p.x += @speed[@mode]*vect.x
+      @area.p.y += @speed[@mode]*vect.y
       @frame += 0.3
 
   # Detect collisions by calculating the distance from each edge of one
@@ -88,16 +90,16 @@ class sprite
   # field of view (in this case, less than half a sprite away in the direction
   # the main sprite is facing), a sprite might "interact" via a callback.
   interact: (spr) ->
-    offx = new rect spr.area.p.x, spr.area.p.y, spr.area.s.x, spr.area.s.y
-    offx.p.l (k) -> offx.p.i(k) + (spr.vector.get "kbd").i(k)*offx.s.i(k)/2
-    off1 = (new vect).l (k) => offx.p.i(k) + offx.s.i(k) - @area.p.i(k)
-    off2 = (new vect).l (k) => @area.p.i(k) + @area.s.i(k) - offx.p.i(k)
+    vect = spr.vector.get "kbd"
+    offx = new rect spr.area.p.x + vect.x*spr.area.s.x/2, spr.area.p.y + vect.y*spr.area.s.y/2, spr.area.s.x, spr.area.s.y
+    off1 = new vect offx.p.x + offx.s.x - @area.p.x, offx.p.y + offx.s.y - @area.p.y
+    off2 = new vect @area.p.x + @area.s.x - offx.p.x, @area.p.y + @area.s.y - offx.p.y
     if off1.x > 0 and off1.y > 0 and off2.x > 0 and off2.y > 0
       spr.mode = 0
       @aiscripts.interact this, spr
 
   # Gather and return data to be saved.
-  savestate: -> {px: @area.p.x, py: @area.p.y, md: @mode, fr: @frame, vx: @vector.get "spr"}
+  savestate: -> px: @area.p.x, py: @area.p.y, md: @mode, fr: @frame, vx: @vector.get "spr"
 
   # Distribute save data to be used.
   loadstate: (state) ->
