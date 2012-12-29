@@ -24,17 +24,15 @@ class soundhandler
     @maxvolume = no
     @muted = 0
     @list = []
-    serv.load.filetype.push
-      head: "snd/"
-      call: (url) ->
-        newf = serv.audio.add url + serv.audio.soundext
-        if serv.audio.soundext isnt 0
-          serv.load.loadcount.push newf
-          newf.data.addEventListener "error", ->
-            newf.data = -1
-            serv.load.err newf, url + serv.audio.soundext
-          newf.data.addEventListener "canplaythrough", -> serv.load.finish newf
-        newf
+    serv.load.filetype["snd/"] = (url) ->
+      newf = serv.audio.add url + serv.audio.soundext
+      if serv.audio.soundext isnt 0
+        serv.load.loadcount.push newf
+        newf.data.addEventListener "error", ->
+          newf.data = -1
+          serv.load.err newf, url + serv.audio.soundext
+        newf.data.addEventListener "canplaythrough", -> serv.load.finish newf
+      newf
 
   # Add a sound to the top list in the stack.
   add: (sndurl) ->

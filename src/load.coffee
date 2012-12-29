@@ -16,19 +16,17 @@ class loader
     @maxload = 0
     @loadcount = []
     @callbacks = []
-    @filetype = []
-    @filetype.push
-      head: "img/"
-      call: (url) ->
-        newf = new surface new Image
-        serv.load.loadcount.push newf
-        newf.buf.onerror = -> serv.load.err newf, url + ".png"
-        newf.buf.onload = ->
-          newf.dims.x = newf.buf.width
-          newf.dims.y = newf.buf.height
-          serv.load.finish newf
-        newf.buf.src = url + ".png"
-        newf
+    @filetype = {}
+    @filetype["img/"] = (url) ->
+      newf = new surface new Image
+      serv.load.loadcount.push newf
+      newf.buf.onerror = -> serv.load.err newf, url + ".png"
+      newf.buf.onload = ->
+        newf.dims.x = newf.buf.width
+        newf.dims.y = newf.buf.height
+        serv.load.finish newf
+      newf.buf.src = url + ".png"
+      newf
 
   # Draw a loading bar on the screen.  
   # Block if something is being loaded.
@@ -52,7 +50,7 @@ class loader
     type = file.substr 0, 4
     matched = file.match /(.*)(?:\[)([0-9]+)(?:-)([0-9]+)(?:])(.*)/
     if matched? then ret = for i in [(parseInt matched[2], 10)..(parseInt matched[3], 10)] then @load matched[1] + i + matched[4]
-    else for l in @filetype when l.head is type then ret = l.call file
+    else ret = @filetype[type]? file
     ret
 
   # Call when there is an error in loading a file.

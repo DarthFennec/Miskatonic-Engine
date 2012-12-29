@@ -6,20 +6,18 @@
 # files and presenting them to the engine as scenenodes.
 class extscene
   constructor: ->
-    serv.load.filetype.push
-      head: "txt/"
-      call: (url) ->
-        data = txt: ""
-        newf = new XMLHttpRequest
-        serv.load.loadcount.push newf
-        newf.open "GET", url, true
-        newf.onreadystatechange = -> if newf.readyState is 4
-          serv.load.err newf, url if newf.status is 404
-          if newf.status is 200
-            data.txt = newf.responseText
-            serv.load.finish newf
-        newf.send()
-        data
+    serv.load.filetype["txt/"] = (url) ->
+      data = txt: ""
+      newf = new XMLHttpRequest
+      serv.load.loadcount.push newf
+      newf.open "GET", url, true
+      newf.onreadystatechange = -> if newf.readyState is 4
+        serv.load.err newf, url if newf.status is 404
+        if newf.status is 200
+          data.txt = newf.responseText
+          serv.load.finish newf
+      newf.send()
+      data
 
   # Interpret file contents, and return a scenenode object. Scene data is
   # plaintext, and formatted in json. The specific layout depends on the
