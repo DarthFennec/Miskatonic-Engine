@@ -32,7 +32,7 @@ class extscene
       if type is "out" then serv.outscenemgr
       else if type is "in" then serv.inscenemgr
       else serv.cutscenemgr
-    new scenenode [], file.f, ->
+    new scenenode file.k, file.f, ->
       list = for i in file.c then switch i.t
         when "t" then serv.extern.settile this, i
         when "s" then serv.extern.setsprite this, i

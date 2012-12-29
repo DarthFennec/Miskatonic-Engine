@@ -25,12 +25,16 @@ class scenenode
       @file = []
       serv.audio.push()
       serv.state = this
-      if @filelist.length is 0
+      preloads = for c, i in @child when c[0] is "~" then i
+      if @filelist.length is 0 and preloads.length is 0
         if serv.load.callbacks.length is 0 then @init()
         else serv.load.callbacks.push => @init()
       else
         @file = for file in @filelist then serv.load.load file
-        serv.load.callbacks.push => @init()
+        @child[i] = serv.load.load child[i].substr 1 for i in preloads
+        serv.load.callbacks.push =>
+          @child[i] = serv.extern.setscene @child[i].txt for i in preloads
+          @init()
 
   # Exit the current scene node, and return control back to the parent node.
   exitscene: (n) ->

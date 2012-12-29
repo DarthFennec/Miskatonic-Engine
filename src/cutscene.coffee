@@ -91,7 +91,7 @@ class cutscenehandler
   # and _t_ is the text that comes before them. Add a marker around the current
   # choice, and space the choices evenly.
   drawchoice: (texttodraw) ->
-    choices = (texttodraw.substring 1).split "\t", 5
+    choices = (texttodraw.substr 1).split "\t", 5
     finalstring = choices.shift()
     finalstring += "\n" if finalstring isnt ""
     @choice -= 2 if choices.length is 2 and @choice > 1
