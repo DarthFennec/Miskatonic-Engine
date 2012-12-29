@@ -11,7 +11,7 @@ class tileset extends sprite
     @musicplaying = @bgmusic is 0
     serv.engine.bgcolor = bgcolor
     serv.engine.buffer.ctx.fillStyle = bgcolor
-    super {solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect 0, 0, @tilesize.x, @tilesize.y)}
+    super solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect 0, 0, @tilesize.x, @tilesize.y)
     gridsize = new vect grid[0].length, grid.length
     @sheet = new surface new vect @tilesize.x*gridsize.x, @tilesize.y*gridsize.y
     width = @tilesheet.dims.x/@tilesize.x

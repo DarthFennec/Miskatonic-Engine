@@ -28,7 +28,7 @@ class aiscripts
     oldpos = new vect -1, -1
     (scenegraph) ->
       mapsrc = scenegraph[scenegraph.length - 1]
-      dist = new vect (Math.abs @sprite.area.p.x - scenegraph.focus.area.p.x), (Math.abs @sprite.area.p.y - scenegraph.focus.area.p.y)
+      dist = new vect (Math.abs @sprite.area.p.x - scenegraph.focus.area.p.x), Math.abs @sprite.area.p.y - scenegraph.focus.area.p.y
       if graph is 0 then graph = new Graph mapsrc.grid.map (x) -> x.map (y) -> (if y < 0 then 1 else 0)
       distance = if dist.x > dist.y then dist.x else dist.y
       srcpos = new vect (1 + Math.floor (@sprite.area.p.x + @sprite.carea.p.x)/mapsrc.tilesize.x),
@@ -48,6 +48,7 @@ class aiscripts
             if vctr.x isnt 0 then @sprite.vector.set "kbd", new vect -vctr.x, 0 else
               dirp += 1 until graph.input[destpos.x + dirp][destpos.y] is 1
               dirn += 1 until graph.input[destpos.x - dirn][destpos.y] is 1
+              dirp += 1 if dirp is dirn and scenegraph.focus.area.p.x + scenegraph.focus.area.s.x/2 - (destpos.x - 1)*mapsrc.tilesize.x < mapsrc.tilesize.x/2
               @sprite.vector.set "kbd", new vect (if dirp > dirn then 1 else -1), 0
             @sprite.mode = 2
         else
@@ -55,6 +56,7 @@ class aiscripts
             if vctr.y isnt 0 then @sprite.vector.set "kbd", new vect 0, -vctr.y else
               dirp += 1 until graph.input[destpos.x][destpos.y + dirp] is 1
               dirn += 1 until graph.input[destpos.x][destpos.y - dirn] is 1
+              dirp += 1 if dirp is dirn and scenegraph.focus.area.p.y + scenegraph.focus.area.s.y/2 - (destpos.y - 1)*mapsrc.tilesize.y < mapsrc.tilesize.y/2
               @sprite.vector.set "kbd", new vect 0, if dirp > dirn then 1 else -1
             @sprite.mode = 2
       if bumprad < distance <= inrad

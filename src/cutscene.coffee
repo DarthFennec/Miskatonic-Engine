@@ -26,8 +26,8 @@ class cutscenehandler
 
   # Set up a new cutscene, default the current frame, and run it.
   initialize: (@frames) ->
-    @frame = {len: 0, elem: -1, txt: -1, overlay: -1, snd: -1, next: 0}
-    @framestate = {len: -1, elem: -1, txt: -1, overlay: -1, snd: -1, next: -1}
+    @frame = len: 0, elem: -1, txt: -1, overlay: -1, snd: -1, next: 0
+    @framestate = len: -1, elem: -1, txt: -1, overlay: -1, snd: -1, next: -1
     @time = 0
     @next()
 
