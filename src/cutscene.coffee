@@ -41,8 +41,9 @@ class cutscenehandler
       if @frame.snd isnt -1 then @frame.snd.step()
       if @frame.txt isnt -1 then buffer.drawImage @text, @charpos.x + (buffer.dims.x - @text.dims.x)/2, @charpos.y + (buffer.dims.y - @text.dims.y)/2
       if @frame.overlay isnt -1 then if @frame.overlay.render buffer then @frame.overlay = -1
-      if @frame.elem isnt -1 then for p in @frame.elem then p.render buffer
-      if @frame.elem isnt -1 or @frame.overlay isnt -1 then buffer.ctx.globalAlpha = 1.0
+      if @frame.elem isnt -1
+        for p in @frame.elem then p.render buffer
+        buffer.ctx.globalAlpha = 1.0
       @time += 1 if @frame.len > 0
       @frame.elem isnt -1
     else no
@@ -165,7 +166,7 @@ class gradient
   savestate: -> @time
 
   # Distribute saved data.
-  loadstate: (state) -> @time = state
+  loadstate: (@time) ->
 
 # **An image cutscene element.**
 #
@@ -188,7 +189,7 @@ class particle
   savestate: -> @time
 
   # Distribute saved data.
-  loadstate: (state) -> @time = state
+  loadstate: (@time) ->
 
   # Helper function for sinusoidal fades.
   fadeform: (t, cycle) -> 0.5 + 0.5*Math.cos t*Math.PI/cycle

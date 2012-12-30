@@ -21,8 +21,7 @@ class soundhandler
   constructor: (@soundext) ->
     @volume = 1
     @volnew = -1
-    @maxvolume = no
-    @muted = 0
+    @muted = no
     @list = []
     serv.load.filetype["snd/"] = (url) ->
       newf = serv.audio.add url + serv.audio.soundext
@@ -47,34 +46,23 @@ class soundhandler
   erase: -> @clear() for v, i in @list when i isnt 0
 
   # Stop and remove all sounds in the top list of the stack.
-  clear: ->
-    for sound in @list.shift()
-      window.clearInterval sound.ii if sound.ii isnt 0
-      sound.stop()
+  clear: -> sound.stop() for sound in @list.shift()
 
   # Set global mute, and set the flag for the change to take effect.
-  mute: (newmute) -> if @muted isnt newmute
-    @muted = newmute
-    @maxvolume = yes
-    @volnew = -1
+  mute: (@muted) -> @volnew = -1
 
   # Check whether each sound has started or stopped stepping, usually due
   # to a change in the stack blocking. Pause or play the sound accordingly. Change
   # the volume on all sounds, if the global volume or mute has been changed.  
   # Do not use or block visual output, ever.
   render: (buffer) ->
-    @volume = 0 if @volume < 0
-    @volume = 1 if @volume > 1
     for j in @list then for i in j
       i.pause() if i.oldset and not i.newset
-      i.unpause @volume if i.newset and not i.oldset
+      i.unpause() if i.newset and not i.oldset
       i.oldset = i.newset
       i.newset = no
-      i.fade @volume if @volnew isnt @volume and not i.paused
-    if @maxvolume
-      @volume = 1
-      @maxvolume = no
-    else @volnew = @volume
+      i.fade() if @volnew isnt @volume
+    @volnew = @volume
     no
 
   # Do not use or block input, ever.

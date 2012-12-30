@@ -8,7 +8,7 @@
 # positive otherwise. The tile map should be at the bottom of the sprite stack.
 class tileset extends sprite
   constructor: (@tilesize, @tilesheet, @bgmusic, bgcolor, grid) ->
-    @musicplaying = @bgmusic is 0
+    @bgmusic.play() if @bgmusic isnt 0
     serv.engine.bgcolor = bgcolor
     serv.engine.buffer.ctx.fillStyle = bgcolor
     super solid: yes, bottom: yes, area: (new rect 0, 0, @tilesize.x, @tilesize.y), carea: (new rect 0, 0, @tilesize.x, @tilesize.y)
@@ -23,12 +23,8 @@ class tileset extends sprite
       srcx = (Math.abs @grid[1 + i][1 + j]) - 1 - srcy*width
       @sheet.map @tilesheet, srcx, srcy, @tilesize.x, @tilesize.y, i, j
 
-  # Play the background music if it's not already playing, and blit the map to the screen.
+  # Step the background music, and blit the map to the screen.
   step: (buff, offset) ->
-    if not @musicplaying
-      @musicplaying = yes
-      serv.audio.maxvolume = yes
-      @bgmusic.play()
     @bgmusic.step() if @bgmusic isnt 0
     buff.layer @sheet, new vect offset.x + buff.dims.x/2, offset.y + buff.dims.y/2
 

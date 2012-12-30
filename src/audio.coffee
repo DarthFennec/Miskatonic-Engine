@@ -4,11 +4,11 @@
 # - Support self-overlap via a redundant audio object.
 class audio
   constructor: (sndurl) -> if sndurl[sndurl.length - 1] is "0" then @data = -1 else
+    @mode = stop: 0, play: 1, pause: 2
     @ii = 0
-    @paused = no
     @oldset = no
     @newset = no
-    @mode = stop: 0, play: 1, pause: 2
+    @sndmode = @mode.stop
     @datamode = @mode.stop
     @data = new Audio
     @data.src = sndurl
@@ -17,17 +17,13 @@ class audio
     @altdata = new Audio
     @altdata.src = sndurl
     @altdata.addEventListener "ended", => @altdatamode = @mode.stop
-
-  # Set an initial volume and a loop duration, assuming
-  # the sound is background music or some other audio loop.
-  init: (initvol, @loop) ->
-    @fade initvol
-    this
+    @fade()
 
   # Play the sound, if it is new or stopped.  
   # Set up the background loop if the loop duration has been initialized.
-  play: (oldplay) -> if @data isnt -1
-    @ii = window.setInterval (=> @play 0), 1000*@loop if @loop? and not oldplay?
+  play: -> if @data isnt -1
+    @sndmode = @mode.play if @sndmode is @mode.stop
+    @ii = window.setInterval (=> @play()), 1000*@loop if @loop? and @ii is 0
     if @datamode is @mode.stop
       @datamode = @mode.play
       @data.play()
@@ -37,6 +33,9 @@ class audio
 
   # Stop the sound playing.
   stop: -> if @data isnt -1
+    @sndmode = @mode.stop
+    window.clearInterval @ii if @ii isnt 0
+    @ii = 0
     if @datamode isnt @mode.stop
       @datamode = @mode.stop
       @data.pause()
@@ -51,32 +50,30 @@ class audio
   # and audio loops: since it is impossible to pause a
   # _window.setInterval_ countdown, attempting to actually
   # pause looping audio will result in unwanted behavior.
-  pause: -> if @data isnt -1
-    if not @paused
-      if @ii isnt 0 then @fade 0 else
-        if @datamode is @mode.play
-          @datamode = @mode.pause
-          @data.pause()
-        if @altdatamode is @mode.play
-          @altdatamode = @mode.pause
-          @altdata.pause()
-      @paused = yes
+  pause: -> if @data isnt -1 and @sndmode is @mode.play
+    @sndmode = @mode.pause
+    if @ii isnt 0 then @fade() else
+      if @datamode is @mode.play
+        @datamode = @mode.pause
+        @data.pause()
+      if @altdatamode is @mode.play
+        @altdatamode = @mode.pause
+        @altdata.pause()
 
   # Unpause (or unmute) the sound if it is paused.
-  unpause: (vol) -> if @data isnt -1
-    if @paused
-      if @ii isnt 0 then @fade vol else
-        if @datamode is @mode.pause
-          @datamode = @mode.play
-          @data.play()
-        if @altdatamode is @mode.pause
-          @altdatamode = @mode.play
-          @altdata.play()
-      @paused = no
+  unpause: -> if @data isnt -1 and @sndmode is @mode.pause
+    @sndmode = @mode.play
+    if @ii isnt 0 then @fade() else
+      if @datamode is @mode.pause
+        @datamode = @mode.play
+        @data.play()
+      if @altdatamode is @mode.pause
+        @altdatamode = @mode.play
+        @altdata.play()
 
   # Set the volume of the sound.
-  fade: (volume) -> if @data isnt -1
-    volume = 0 if serv.audio.muted
+  fade: -> if @data isnt -1
+    volume = if serv.audio.muted or (@sndmode is @mode.pause and @ii isnt 0) then 0 else serv.audio.volume
     @data.volume = volume
     @altdata.volume = volume
 

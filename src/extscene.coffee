@@ -41,8 +41,8 @@ class extscene
   settile: (_this, i) ->
     i.c ?= "#000000"
     if i.a?
-      if i.d? then snd = (@file _this, i.a).init (i.v ? 0), i.d
-      else snd = @file _this, i.a
+      snd = @file _this, i.a
+      snd.loop = i.d if i.d?
     else snd = 0
     new tileset (new vect i.s[0], i.s[1]), (@file _this, i.i), snd, i.c, i.m
 
@@ -68,7 +68,9 @@ class extscene
       else switch p
         when "snd"
           if typeof i.snd is "number" then ps.snd = @file _this, i.snd
-          else ps.snd = (@file _this, i.snd[0]).init i.snd[1], i.snd[2]
+          else
+            ps.snd = @file _this, i.snd[0]
+            ps.snd.loop = i.snd[1]
         when "next"
           if typeof i.next is "number" then ps.next = i.next
           else ps.next = @setfunction i.next, "k", _this
