@@ -9,7 +9,7 @@ window.onload = ->
   serv.screen.getsysteminfo()
   if not serv.screen.basicsupport then serv.screen.unwrap 1 else
     keymap = up: [38, 87, 90, 188], left: [37, 65, 81], down: [40, 79, 83], right: [39, 68, 69], run: [16], act: [13, 32], pause: [27, 80]
-    serv.global = {}
+    serv.global = m: no, s: [800, 600]
     serv.load = new loader
     serv.save = new savehandler serv.screen.cansaveload
     serv.audio = new soundhandler serv.screen.soundext

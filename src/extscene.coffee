@@ -67,7 +67,7 @@ class extscene
       if i[p] is -1 then ps[p] = -1
       else switch p
         when "snd"
-          if typeof i.snd is "number" then ps.snd = @file _this, i.snd
+          if typeof i.snd[0] is "number" then ps.snd = @file _this, i.snd
           else
             ps.snd = @file _this, i.snd[0]
             ps.snd.loop = i.snd[1]

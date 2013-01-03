@@ -76,7 +76,9 @@ class cutscenehandler
       for n of @frames[nxt]
         @frame[n] = @frames[nxt][n]
         @framestate[n] = nxt
-      @frame.next += 1 if @frame.next is nxt
+      if @frame.next is nxt
+        @frame.next += 1
+        @framestate.next = -1
       @time = 0
       if @frame.txt isnt -1
         if @frame.txt[0] is "\t"
@@ -124,25 +126,21 @@ class cutscenehandler
 
   # Gather and return data to be saved.
   savestate: -> if @frames isnt 0
-    choice: @choice
-    time: @time
-    frame: @framestate
-    state: do =>
-      ret = {}
-      for n of @frame
-        if @frame[n] instanceof Array then ret[n] = (k.savestate?() for k in @frame[n])
-        else ret[n] = @frame[n].savestate?()
-      ret
+    ret = {}
+    ret.overlay = @frame.overlay.savestate() if @frame.overlay isnt -1
+    if @frame.elem isnt -1 then ret.elem = for element in @frame.elem then element.savestate()
+    ret.next = @frame.next if @framestate.next is -1
+    [@choice, @time, @framestate, ret]
 
-  # Distribute saved data into the sprite list.
+  # Distribute saved data into the frame.
   loadstate: (state) -> if @frames isnt 0 and state?
-    @choice = state.choice
-    @time = state.time
-    @framestate = state.frame
-    @frame[n] = @frames[@framestate[n]][n] for n of @frame when @framestate[n] isnt -1
-    for n of @frame
-      if @frame[n] instanceof Array then for k, i in @frame[n] then k.loadstate? state.state[n][i]
-      else @frame[n].loadstate? state.state[n]
+    @choice = state[0]
+    @time = state[1]
+    @framestate = state[2]
+    @frame[n] = @frames[@framestate[n]][n] for n of @framestate when @framestate[n] isnt -1
+    @frame.overlay.loadstate state[3].overlay if @frame.overlay isnt -1
+    element.loadstate state[3].elem[index] for element, index in @frame.elem if @frame.elem isnt -1
+    @frame.next = state[3].next if @framestate.next is -1
 
 # **A color fade overlay element.**
 #

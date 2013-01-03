@@ -20,7 +20,7 @@ class savehandler
   savestate: (n) ->
     obj = global: serv.global
     obj.stack = serv.state.savestate()
-    obj.local = (rend.savestate() for rend in serv.engine.rends when rend.savestate?)
+    obj.local = for rend in serv.engine.rends when rend.savestate? then rend.savestate()
     localStorage.savestate = JSON.stringify obj
     n
 
@@ -28,8 +28,12 @@ class savehandler
   loadstate: (n) ->
     serv.reset()
     obj = JSON.parse localStorage.savestate
-    serv.global = obj.global
+    serv.audio.mute obj.global.m
+    serv.engine.resize new vect obj.global.s[0], obj.global.s[1]
     serv.scene.loadstate obj.stack
-    serv.load.callbacks.push -> serv.load.callbacks.push ->
-      rend.loadstate obj.local.shift() for rend in serv.engine.rends when rend.loadstate?
+    waitforload = ->
+      if obj.stack.length is 0 then serv.load.callbacks.push ->
+        rend.loadstate obj.local.shift() for rend in serv.engine.rends when rend.loadstate?
+      else serv.load.callbacks.push waitforload
+    serv.load.callbacks.push waitforload
     n

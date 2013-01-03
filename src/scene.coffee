@@ -41,4 +41,7 @@ class scenehandler
     ret
 
   # Distribute saved data into the sprite list.
-  loadstate: (state) -> if @currscene isnt 0 and state? then (sprite.loadstate state[sprite.index] for sprite in @currscene)
+  loadstate: (state) ->
+    if @currscene isnt 0 and state?
+      sprite.loadstate state[sprite.index] for sprite in @currscene
+    no

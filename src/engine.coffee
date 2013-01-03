@@ -23,6 +23,7 @@ class engine
   # - The _line_ and _stroke_ values are for drawing the loading bar.
   # - Frames are rendered from the top down to support stack blocking.
   resize: (s) ->
+    serv.global.s = [s.x, s.y]
     t = @buffer.size()
     if s.x isnt t.x or s.y isnt t.y
       serv.screen.resize 0, s

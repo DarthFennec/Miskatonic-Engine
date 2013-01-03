@@ -49,7 +49,9 @@ class soundhandler
   clear: -> sound.stop() for sound in @list.shift()
 
   # Set global mute, and set the flag for the change to take effect.
-  mute: (@muted) -> @volnew = -1
+  mute: (@muted) ->
+    serv.global.m = @muted
+    @volnew = -1
 
   # Check whether each sound has started or stopped stepping, usually due
   # to a change in the stack blocking. Pause or play the sound accordingly. Change
@@ -67,3 +69,26 @@ class soundhandler
 
   # Do not use or block input, ever.
   input: (keys) -> no
+
+  # Gather and return audio data to be saved.
+  savestate: ->
+    ret = [@volume]
+    for j in @list then ret.push (for i in j
+      if i.sndmode isnt i.mode.pause then 0 else if i.ii isnt 0 then -1
+      else if i.datamode is i.mode.pause and i.altdatamode is i.mode.pause
+        Math.min i.data.currentTime, i.altdata.currentTime
+      else if i.datamode is i.mode.pause then i.data.currentTime
+      else i.altdata.currentTime)
+    ret
+
+  # Set all audio data properly.
+  loadstate: (state) ->
+    @volume = state.shift()
+    @volnew = -1
+    for j, k in @list then for i, h in j
+      if i.sndmode is i.mode.stop and state[k][h] isnt 0
+        i.data.currentTime = state[k][h] if state[k][h] > 0
+        i.play()
+        i.pause()
+      if i.sndmode isnt i.mode.stop and state[k][h] is 0 then i.stop()
+    no

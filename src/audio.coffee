@@ -12,16 +12,20 @@ class audio
     @datamode = @mode.stop
     @data = new Audio
     @data.src = sndurl
-    @data.addEventListener "ended", => @datamode = @mode.stop
+    @data.addEventListener "ended", =>
+      @datamode = @mode.stop
+      @sndmode = @altdatamode if @ii is 0
     @altdatamode = @mode.stop
     @altdata = new Audio
     @altdata.src = sndurl
-    @altdata.addEventListener "ended", => @altdatamode = @mode.stop
+    @altdata.addEventListener "ended", =>
+      @altdatamode = @mode.stop
+      @sndmode = @datamode if @ii is 0
     @fade()
 
   # Play the sound, if it is new or stopped.  
   # Set up the background loop if the loop duration has been initialized.
-  play: -> if @data isnt -1
+  play: -> if @data isnt -1 and (@sndmode isnt @mode.pause or @ii isnt 0)
     @sndmode = @mode.play if @sndmode is @mode.stop
     @ii = window.setInterval (=> @play()), 1000*@loop if @loop? and @ii is 0
     if @datamode is @mode.stop
