@@ -9,6 +9,6 @@ include all the features needed by many games, such as combat or HUD.
 However, it should not be difficult to add features to the engine
 framework, if you wish to do so. This project is in early beta.
 
-- [Live Demo](http://spinnychair.co.cc)
+- [Live Demo](http://spinnychair.net)
 - [Github Project Page](https://github.com/DarthFennec/Miskatonic-Engine)
-- [Source Code/API Documentation](http://spinnychair.co.cc/doc/engine.html)
+- [Source Code/API Documentation](http://spinnychair.net/doc/engine.html)
