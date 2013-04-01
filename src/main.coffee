@@ -5,9 +5,9 @@ serv = {}
 # bind its IO to the DOM, and load the root scene.
 window.onload = ->
   serv.screen = new screenhandler ["display", "miskatonic", "errorbox"]
-  screen = new surface serv.screen.elem[1]
+  screen = new surface serv.screen.elem.miskatonic
   serv.screen.getsysteminfo()
-  if not serv.screen.basicsupport then serv.screen.unwrap 1 else
+  if not serv.screen.basicsupport then serv.screen.unwrap "miskatonic" else
     keymap = up: [38, 87, 90, 188], left: [37, 65, 81], down: [40, 79, 83], right: [39, 68, 69], run: [16], act: [13, 32], pause: [27, 80]
     serv.global = m: no, s: [800, 600]
     serv.load = new loader

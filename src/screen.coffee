@@ -3,7 +3,9 @@
 # Abstract useful data and methods concerning the document, such as messaging,
 # sizing and altering the screen, and getting compatibility data.
 class screenhandler
-  constructor: (elems) -> @elem = for e in elems then document.getElementById e
+  constructor: (elems) ->
+    @elem = {}
+    @elem[e] = document.getElementById e for e in elems
 
   # Replace an element with the element inside it.
   unwrap: (i) -> @elem[i].parentNode.replaceChild @elem[i].firstChild, @elem[i]

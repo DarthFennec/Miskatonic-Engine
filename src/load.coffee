@@ -55,7 +55,7 @@ class loader
 
   # Call when there is an error in loading a file.
   err: (newf, fname) ->
-    serv.screen.message 2, "Error: failed to load " + fname, 10
+    serv.screen.message "errorbox", "Error: failed to load " + fname, 10
     @finish newf
 
   # Call when a file is finished loading. Removes itself from the list,

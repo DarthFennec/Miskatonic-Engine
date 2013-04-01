@@ -26,7 +26,7 @@ class engine
     serv.global.s = [s.x, s.y]
     t = @buffer.size()
     if s.x isnt t.x or s.y isnt t.y
-      serv.screen.resize 0, s
+      serv.screen.resize "display", s
       @screen.size s
       @buffer.size s
       @buffer.ctx.fillStyle = @bgcolor
