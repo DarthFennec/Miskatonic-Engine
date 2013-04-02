@@ -43,4 +43,4 @@ window.onload = ->
     serv.engine = new engine [serv.audio, serv.load], screen, keymap
     document.addEventListener "keydown", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, 1
     document.addEventListener "keyup", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, -1
-    window.setInterval (-> serv.engine.step()), 33
+    serv.screen.animate -> serv.engine.step()

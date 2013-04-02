@@ -6,6 +6,13 @@ class screenhandler
   constructor: (elems) ->
     @elem = {}
     @elem[e] = document.getElementById e for e in elems
+    @reqframe = do ->
+      r = window.requestAnimationFrame
+      for frame in ["ms", "moz", "webkit", "o"]
+        break if r?
+        r = window[frame + "RequestAnimationFrame"]
+      if not r? then r = (c) -> window.setTimeout c, 1000 / 30
+      (c) -> r(c)
 
   # Replace an element with the element inside it.
   unwrap: (i) -> @elem[i].parentNode.replaceChild @elem[i].firstChild, @elem[i]
@@ -24,6 +31,13 @@ class screenhandler
     msg.innerText = string
     @elem[i].appendChild msg
     window.setTimeout (-> @elem[i].removeChild msg), 1000*time
+
+  # Function used to run the animation loop.
+  animate: (callback) ->
+    doanim = ->
+      serv.screen.reqframe doanim
+      callback()
+    doanim()
 
   # Gather and format data about the client system,
   # and the extent of HTML5 support on the client browser, including:
