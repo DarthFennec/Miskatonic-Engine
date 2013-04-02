@@ -44,7 +44,7 @@ class cutscenehandler
       if @frame.elem isnt -1
         for p in @frame.elem then p.render buffer
         buffer.ctx.globalAlpha = 1.0
-      @time += 1 if @frame.len > 0
+      @time += serv.screen.clock if @frame.len > 0
       @frame.elem isnt -1
     else no
 
@@ -157,7 +157,7 @@ class gradient
     buffer.clear yes
     buffer.ctx.globalAlpha = 1.0
     buffer.ctx.fillStyle = serv.engine.bgcolor
-    @time += 1
+    @time += serv.screen.clock
     @time > @duration
 
   # Gather and return data to be saved.
@@ -181,7 +181,7 @@ class particle
     dx = info[0] + (buffer.dims.x - @image.dims.x*info[2])/2
     dy = info[1] + (buffer.dims.y - @image.dims.y*info[2])/2
     buffer.drawImage @image, dx, dy, info[2]*@image.dims.x, info[2]*@image.dims.y
-    @time = info[4]
+    if info[4] then @time += serv.screen.clock else @time = 0
 
   # Gather and return data to be saved.
   savestate: -> @time

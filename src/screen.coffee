@@ -11,7 +11,7 @@ class screenhandler
       for frame in ["ms", "moz", "webkit", "o"]
         break if r?
         r = window[frame + "RequestAnimationFrame"]
-      if not r? then r = (c) -> window.setTimeout c, 1000 / 30
+      if not r? then r = (c) -> window.setTimeout c, 33.333333333333336
       (c) -> r(c)
 
   # Replace an element with the element inside it.
@@ -32,12 +32,17 @@ class screenhandler
     @elem[i].appendChild msg
     window.setTimeout (-> @elem[i].removeChild msg), 1000*time
 
-  # Function used to run the animation loop.
+  # Function used to run the animation loop. Keep track of the clock variable,
+  # which contains the amount of time since the last render. Using this, the
+  # render can maintain a smooth animation, even at a variable framerate.
   animate: (callback) ->
-    doanim = ->
-      serv.screen.reqframe doanim
+    time = new Date().getTime()
+    doanim = (timestamp) ->
+      serv.screen.clock = 0.03*(timestamp - time)
+      time = timestamp
       callback()
-    doanim()
+      serv.screen.reqframe doanim
+    serv.screen.reqframe doanim
 
   # Gather and format data about the client system,
   # and the extent of HTML5 support on the client browser, including:

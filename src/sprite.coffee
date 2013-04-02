@@ -51,9 +51,9 @@ class sprite
       @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
       buff.map @sheet, (3 + @vector.get "spr"), (Math.floor @frame), @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
       vect = @vector.get "vlc"
-      @area.p.x += @speed[@mode]*vect.x
-      @area.p.y += @speed[@mode]*vect.y
-      @frame += 0.3
+      @area.p.x += @speed[@mode]*vect.x*serv.screen.clock
+      @area.p.y += @speed[@mode]*vect.y*serv.screen.clock
+      @frame += 0.3*serv.screen.clock
 
   # Detect collisions by calculating the distance from each edge of one
   # sprite to the alternate edge of the other. If every distance is positive,
