@@ -44,7 +44,7 @@ class extscene
       snd = @file _this, i.a
       snd.loop = i.d if i.d?
     else snd = 0
-    new tileset (new vect i.s[0], i.s[1]), (@file _this, i.i), snd, i.c, i.m
+    new tileset (new vect i.s[0], i.s[1]), (@file _this, i.i), i.p, snd, i.c, i.m
 
   # Interpret [sprite objects](sprite.html) from json.
   setsprite: (_this, i) ->

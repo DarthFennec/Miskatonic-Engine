@@ -29,7 +29,7 @@ class aiscripts
     (scenegraph) ->
       mapsrc = scenegraph[scenegraph.length - 1]
       dist = new vect (Math.abs @sprite.area.p.x - scenegraph.focus.area.p.x), Math.abs @sprite.area.p.y - scenegraph.focus.area.p.y
-      if graph is 0 then graph = new Graph mapsrc.grid.map (x) -> x.map (y) -> (if y < 0 then 1 else 0)
+      if graph is 0 then graph = new Graph mapsrc.grid.map (x) -> x.map (y) -> (if mapsrc.coll[y] > 0 then 1 else 0)
       distance = Math.max dist.x, dist.y
       srcpos = new vect (1 + Math.floor (@sprite.area.p.x + @sprite.carea.p.x)/mapsrc.tilesize.x),
         1 + Math.floor (@sprite.area.p.y + @sprite.carea.p.y)/mapsrc.tilesize.y
