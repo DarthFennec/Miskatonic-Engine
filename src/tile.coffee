@@ -23,8 +23,11 @@ class tileset extends sprite
       srcx = (Math.abs @grid[1 + i][1 + j]) - 1 - srcy*width
       @sheet.map @tilesheet, srcx, srcy, @tilesize.x, @tilesize.y, i, j
 
+  # We don't need a step function, so do nothing.
+  step: ->
+
   # Step the background music, and blit the map to the screen.
-  step: (buff, offset) ->
+  render: (buff, offset) ->
     @bgmusic.step() if @bgmusic isnt 0
     buff.layer @sheet, new vect offset.x + buff.dims.x/2, offset.y + buff.dims.y/2
 

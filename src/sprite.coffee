@@ -45,17 +45,19 @@ class sprite
       @sheet.ctx.scale -1, 1
       @sheet.drawImage tmp, 0, 0, 3*@area.s.x, 0, 5*@area.s.x, tmp.dims.y
 
-  # Select the correct tile from the spritesheet, based on _vector_, _mode_,
-  # and _frame_, and draw it to the screen based on _area_. Then update _area_
-  # and _frame_.
-  step: (buff, offset) ->
+  # Update _area_ and _frame_.
+  step: ->
     if @sheet isnt 0
-      @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
-      buff.map @sheet, (3 + @vector.get "spr"), (Math.floor @frame), @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
       vect = @vector.get "vlc"
       @area.p.x += @speed[@mode]*vect.x*serv.screen.clock
       @area.p.y += @speed[@mode]*vect.y*serv.screen.clock
       @frame += 0.3*serv.screen.clock
+      @frame = @len[@mode] if @frame < @len[@mode] or @frame >= @len[1 + @mode]
+
+  # Select the correct tile from the spritesheet, based on _vector_, _mode_,
+  # and _frame_, and draw it to the screen based on _area_.
+  render: (buff, offset) -> if @sheet isnt 0
+    buff.map @sheet, (3 + @vector.get "spr"), (Math.floor @frame), @area.s.x, @area.s.y, @area.p.x - offset.x, @area.p.y - offset.y, 1, 1
 
   # Detect collisions by calculating the distance from each edge of one
   # sprite to the alternate edge of the other. If every distance is positive,

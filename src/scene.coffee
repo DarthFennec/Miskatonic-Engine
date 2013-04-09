@@ -21,11 +21,12 @@ class scenehandler
     if @currscene isnt 0
       @currscene.sort (a, b) -> if a.bottom then 1 else if b.bottom then -1 else b.area.p.y - a.area.p.y
       for sprite in @currscene
-        if sprite.active then (scene.collide sprite for scene in @currscene when sprite isnt scene)
         sprite.aiscripts.frame? @currscene
+        sprite.step()
+        if sprite.active then (scene.collide sprite for scene in @currscene when sprite isnt scene)
       f = new vect @currscene.focus.area.p.x + (@currscene.focus.area.s.x - buffer.dims.x)/2,
         @currscene.focus.area.p.y + (@currscene.focus.area.s.y - buffer.dims.y)/2
-      sprite.step buffer, f for sprite in @currscene
+      sprite.render buffer, f for sprite in @currscene
       yes
     else no
 

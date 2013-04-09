@@ -150,14 +150,18 @@ class gradient
 
   # Come up with a fade amount, set the audio volume, and render to the screen.
   render: (buffer) ->
+    @time += serv.screen.clock
     serv.audio.volume = if @type then 1 - @time/@duration else @time/@duration
+    serv.audio.volume = 1 if serv.audio.volume > 1
+    serv.audio.volume = 0 if serv.audio.volume < 0
     newalpha = if @type then @time/@duration else 1 - @time/@duration
+    newalpha = 1 if newalpha > 1
+    newalpha = 0 if newalpha < 0
     buffer.ctx.globalAlpha = newalpha
     buffer.ctx.fillStyle = @color
     buffer.clear yes
     buffer.ctx.globalAlpha = 1.0
     buffer.ctx.fillStyle = serv.engine.bgcolor
-    @time += serv.screen.clock
     @time > @duration
 
   # Gather and return data to be saved.
@@ -187,10 +191,10 @@ class sequence
 
   # Apply any new changes to the scene.
   render: (buffer) ->
+    @time += serv.screen.clock
     while @timeline[@frame]?[0] <= @time
       @scene[@timeline[@frame][1]][@timeline[@frame][2]] = @timeline[@frame][3]
       @frame += 1
-    @time += serv.screen.clock
     not @timeline[@frame]?
 
   # Gather and return data to be saved.
@@ -205,16 +209,19 @@ class sequence
 # be controlled per-frame by a callback function, which can determine the
 # position, size, and alpha of the particle.
 class particle
-  constructor: (@image, @callback) -> @time = 0
+  constructor: (@image, @callback) ->
+    @continue = no
+    @time = 0
 
   # Run the callback, draw the results, and increment the frame counter.
   render: (buffer) ->
+    if @continue then @time += serv.screen.clock else @time = 0
     info = @callback @time
     buffer.ctx.globalAlpha = info[3]
     dx = info[0] + (buffer.dims.x - @image.dims.x*info[2])/2
     dy = info[1] + (buffer.dims.y - @image.dims.y*info[2])/2
     buffer.drawImage @image, dx, dy, info[2]*@image.dims.x, info[2]*@image.dims.y
-    if info[4] then @time += serv.screen.clock else @time = 0
+    @continue = info[4]
 
   # Gather and return data to be saved.
   savestate: -> @time
