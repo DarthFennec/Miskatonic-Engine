@@ -33,9 +33,11 @@ class sprite
       focus : no
       bottom : no
       aiscripts : {}
+    @id = args.id ? ""
     @[prop] = args[prop] ? def[prop] for prop of def
     @aiscripts.sprite = this if @aiscripts isnt {}
     if @sheet isnt 0
+      @id = @sheet.buf.src.slice (1 + @sheet.buf.src.lastIndexOf "/"), -4 if @id is ""
       tmp = @sheet
       @sheet = new surface new vect 8*@area.s.x, tmp.dims.y
       @sheet.ctx.scale -1, 1

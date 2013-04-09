@@ -166,6 +166,39 @@ class gradient
   # Distribute saved data.
   loadstate: (@time) ->
 
+# **An in-game cutscene element.**
+#
+# Used to run cutscenes on-the-fly, via engine graphics (scripted sequences).
+# The script used is the _timeline_ variable, which is an array of 4-tuples,
+# each of which represents a change in the scene. Each tuple has the form:  
+# [time, sprite, property, value]
+#
+# Multiple changes can be made at once (just set the time the same on each).
+# This is an overlay element, because the overlay system allows the scene to
+# render through, but does not allow the scene to assume any control.
+class sequence
+  constructor: (@timeline) ->
+    @timeline.sort (a, b) -> if a[0] > b[0] then 1 else -1
+    for elem in serv.engine.rends when elem.currscene? and elem.currscene isnt 0
+      @scene = elem.sprites
+      break
+    @time = 0
+    @frame = 0
+
+  # Apply any new changes to the scene.
+  render: (buffer) ->
+    while @timeline[@frame]?[0] <= @time
+      @scene[@timeline[@frame][1]][@timeline[@frame][2]] = @timeline[@frame][3]
+      @frame += 1
+    @time += serv.screen.clock
+    not @timeline[@frame]?
+
+  # Gather and return data to be saved.
+  savestate: -> @time
+
+  # Distribute saved data.
+  loadstate: (@time) ->
+
 # **An image cutscene element.**
 #
 # The most common cutscene element type, this is a simple still image. It can

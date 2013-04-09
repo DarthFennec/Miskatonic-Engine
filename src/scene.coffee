@@ -9,8 +9,10 @@ class scenehandler
   # Initialize or reinitialize the scene, given a new sprite list. Pass 0 to remove the scene.
   initialize: (@currscene) ->
     if @currscene isnt 0
+      @sprites = {}
       @currscene.focus = @currscene[0]
       for sprite, index in @currscene
+        @sprites[sprite.id] = sprite
         @currscene.focus = sprite if sprite.focus
         sprite.index = index
 

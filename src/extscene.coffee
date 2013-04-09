@@ -77,7 +77,8 @@ class extscene
         when "elem" then ps.elem = for q in i.elem
           new particle (@file _this, q[0]), @setfunction q[1], "t", _this
         when "overlay"
-          ps.overlay = new gradient i.overlay[0], i.overlay[1], i.overlay[2]
+          if typeof i.overlay[0] isnt "string" then ps.overlay = new sequence i.overlay
+          else ps.overlay = new gradient i.overlay[0], i.overlay[1], i.overlay[2]
         else ps[p] = i[p]
     ps
 
