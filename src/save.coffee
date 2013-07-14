@@ -19,6 +19,7 @@ class savehandler
   # Gather state data from the game, stringify, and store in localStorage.
   savestate: (n) ->
     obj = global: serv.global
+    obj.audio = serv.audio.savestate()
     obj.stack = serv.state.savestate()
     obj.local = for rend in serv.engine.rends when rend.savestate? then rend.savestate()
     localStorage.savestate = JSON.stringify obj
@@ -34,6 +35,7 @@ class savehandler
     waitforload = ->
       if obj.stack.length is 0 then serv.load.callbacks.push ->
         rend.loadstate obj.local.shift() for rend in serv.engine.rends when rend.loadstate?
+        serv.audio.loadstate obj.audio
       else serv.load.callbacks.push waitforload
     serv.load.callbacks.push waitforload
     n

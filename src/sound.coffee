@@ -14,9 +14,6 @@
 #   won't be run. This system automatically plays and pauses sounds as it
 #   detects changes in how frequently the _step_ function is run.
 # - Provide global volume and mute functions, which affect all loaded sounds.
-#
-# This layer will never block, and should never be blocked. Keep it at the
-# top of the render stack.
 class soundhandler
   constructor: (@soundext) ->
     @volume = 1
@@ -55,9 +52,8 @@ class soundhandler
 
   # Check whether each sound has started or stopped stepping, usually due
   # to a change in the stack blocking. Pause or play the sound accordingly. Change
-  # the volume on all sounds, if the global volume or mute has been changed.  
-  # Do not use or block visual output, ever.
-  render: (buffer) ->
+  # the volume on all sounds, if the global volume or mute has been changed. 
+  render: ->
     for j in @list then for i in j
       i.pause() if i.oldset and not i.newset
       i.unpause() if i.newset and not i.oldset
@@ -66,9 +62,6 @@ class soundhandler
       i.fade() if @volnew isnt @volume
     @volnew = @volume
     no
-
-  # Do not use or block input, ever.
-  input: (keys) -> no
 
   # Gather and return audio data to be saved.
   savestate: ->

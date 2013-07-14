@@ -66,4 +66,5 @@ class engine
     @buffer.clear no
     for rend in @rends when rend.render @buffer then break
     @buffer.clear yes
+    serv.audio.render()
     no

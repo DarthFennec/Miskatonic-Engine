@@ -40,7 +40,7 @@ window.onload = ->
         serv.pausemgr = new pauser serv.engine.screen, @file[6].txt, pausescene, @file[4], @file[5]
         serv.engine.rends.push serv.pausemgr, serv.cutscenemgr, serv.inscenemgr, serv.outscenemgr
       (idx) -> if idx isnt -1 then @initchild (if idx + 1 is @child.length then 0 else idx + 1)
-    serv.engine = new engine [serv.audio, serv.load], screen, keymap
+    serv.engine = new engine [serv.load], screen, keymap
     document.addEventListener "keydown", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, 1
     document.addEventListener "keyup", (e) -> serv.engine.input (-> e.preventDefault()), e.keyCode, -1
     serv.screen.animate -> serv.engine.step()
