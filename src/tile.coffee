@@ -17,7 +17,6 @@ class tileset extends sprite
     @coll.push 1
     super
       solid: yes
-      bottom: yes
       area: (new rect 0, 0, @tilesize.x, @tilesize.y)
       carea: (new rect 0, 0, @tilesize.x, @tilesize.y)
     gridsize = new vect grid[0].length, grid.length

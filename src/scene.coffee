@@ -19,7 +19,7 @@ class scenehandler
   # Render all the sprites, after solving all AI and collisions.
   render: (buffer) ->
     if @currscene isnt 0
-      @currscene.sort (a, b) -> if a.bottom then 1 else if b.bottom then -1 else b.area.p.y - a.area.p.y
+      @currscene.sort (a, b) -> b.area.p.y - a.area.p.y
       for sprite in @currscene
         sprite.aiscripts.frame? @currscene
         sprite.step()

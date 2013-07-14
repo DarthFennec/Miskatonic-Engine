@@ -11,7 +11,6 @@
 # - mode: The mode (standing, walking, running, etc).
 # - frame: The animation frame index.
 # - focus: _true_ if the camera centers on this sprite.
-# - bottom: _true_ if the sprite is always on the bottom.
 # - aiscripts: A list of callback functions to call under various circumstances.
 #
 # Sprites can represent anything from maps to player characters to NPCs
@@ -31,7 +30,6 @@ class sprite
       mode : 0
       frame : 0
       focus : no
-      bottom : no
       aiscripts : {}
     @id = args.id ? ""
     @[prop] = args[prop] ? def[prop] for prop of def
