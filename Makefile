@@ -4,8 +4,8 @@ build:
 min:
 	coffee -pjc src/*.coffee | uglifyjs --unsafe -o miskatonic.min.js
 
-doc:
-	docco src/*.coffee
+clean:
+	rm -f miskatonic.js miskatonic.min.js
 
 test:
 	python -m http.server

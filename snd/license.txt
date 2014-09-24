@@ -1,0 +1,83 @@
+Sound pack downloaded from Freesound.org
+----------------------------------------
+
+This pack of sounds contains sounds by RunnerPack ( http://www.freesound.org/people/RunnerPack/  )
+You can find this pack online at: http://www.freesound.org/people/RunnerPack/packs/5653/
+
+
+License details
+---------------
+
+Sampling+: http://creativecommons.org/licenses/sampling+/1.0/
+Creative Commons 0: http://creativecommons.org/publicdomain/zero/1.0/
+Attribution: http://creativecommons.org/licenses/by/3.0/
+Attribution Noncommercial: http://creativecommons.org/licenses/by-nc/3.0/
+
+
+Sounds in this pack
+-------------------
+
+  * 87047__RunnerPack__woosh.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87047/
+    * license: Attribution
+  * 87046__RunnerPack__weapon.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87046/
+    * license: Attribution
+  * 87045__RunnerPack__weapGone.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87045/
+    * license: Attribution
+  * 87044__RunnerPack__weapCollect.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87044/
+    * license: Attribution
+  * 87043__RunnerPack__weapAppear.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87043/
+    * license: Attribution
+  * 87042__RunnerPack__victory.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87042/
+    * license: Attribution
+  * 87041__RunnerPack__target.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87041/
+    * license: Attribution
+  * 87040__RunnerPack__stun.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87040/
+    * license: Attribution
+  * 87039__RunnerPack__pause.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87039/
+    * license: Attribution
+  * 87038__RunnerPack__pan.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87038/
+    * license: Attribution
+  * 87037__RunnerPack__nanoloop.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87037/
+    * license: Attribution
+  * 87036__RunnerPack__music.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87036/
+    * license: Attribution
+  * 87035__RunnerPack__menuSel.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87035/
+    * license: Attribution
+  * 87034__RunnerPack__menuNav.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87034/
+    * license: Attribution
+  * 87033__RunnerPack__menuInc.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87033/
+    * license: Attribution
+  * 87032__RunnerPack__menuDec.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87032/
+    * license: Attribution
+  * 87031__RunnerPack__launcher.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87031/
+    * license: Attribution
+  * 87030__RunnerPack__flipper.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87030/
+    * license: Attribution
+  * 87029__RunnerPack__flipHit.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87029/
+    * license: Attribution
+  * 87028__RunnerPack__drain.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87028/
+    * license: Attribution
+  * 87027__RunnerPack__defeat.wav
+    * url: http://www.freesound.org/people/RunnerPack/sounds/87027/
+    * license: Attribution
+
